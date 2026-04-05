@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b1426">
+<title>Laser Run EPS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+
+<style>
+:root{
+  --bg:#0b1426;--bg2:#111e35;--bg3:#182844;--card:#1a2e4a;--card2:#1f3555;
+  --border:#2a4060;--blue:#0ea5e9;--red:#ef4444;--green:#10b981;
+  --orange:#f59e0b;--purple:#8b5cf6;
+  --text:#e2eeff;--text2:#7fa8cc;--text3:#3d5a7a;
+  --radius:14px;--shadow:0 4px 24px rgba(0,0,0,.45);
+  --font:'Barlow',sans-serif;--font-d:'Barlow Condensed',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font);}
+button{font-family:var(--font);cursor:pointer;}
+input,select{font-family:var(--font);}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 14px;height:56px;display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:100;}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--font-d);font-size:1.2rem;font-weight:800;color:var(--text);}
+.brand-dot{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.topbar-right{margin-left:auto;display:flex;gap:6px;align-items:center;}
+.ens-sess-chip{background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.4);color:#10b981;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:800;font-family:var(--font-d);letter-spacing:1px;white-space:nowrap;}
+.elv-sess-chip{background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);color:var(--purple);padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:800;font-family:var(--font-d);letter-spacing:1px;cursor:pointer;white-space:nowrap;}
+.tbtn{background:rgba(255,255,255,.07);border:1px solid var(--border);color:var(--text2);width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .2s;flex-shrink:0;}
+.tbtn:hover{background:rgba(255,255,255,.13);color:var(--text);}
+.fb-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s;}
+.fb-dot.ok{background:var(--green);box-shadow:0 0 6px rgba(16,185,129,.6);}
+.fb-dot.err{background:var(--red);}
+.session-chip{background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);color:var(--purple);padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:800;font-family:var(--font-d);letter-spacing:1px;cursor:pointer;white-space:nowrap;}
+
+/* ── NAV ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:99;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:0 2px;padding-bottom:env(safe-area-inset-bottom,0);}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 7px;cursor:pointer;border:none;background:transparent;color:var(--text3);font-size:.44rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;transition:color .2s;}
+.nav-item .ni{font-size:1.15rem;transition:transform .2s;}
+.nav-item.active{color:var(--blue);}
+.nav-item.active .ni{transform:scale(1.12);}
+
+/* ── PAGES ── */
+.page{display:none;padding:14px 12px 88px;max-width:700px;margin:0 auto;width:100%;}
+.page.active{display:block;animation:fadeUp .18s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── SHARED ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);}
+.card-title{font-family:var(--font-d);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text3);margin-bottom:10px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 18px;border-radius:10px;border:none;font-size:.9rem;font-weight:700;transition:all .15s;line-height:1;cursor:pointer;}
+.btn:active{transform:scale(.96);}
+.btn-primary{background:linear-gradient(135deg,var(--blue),#0284c7);color:#fff;box-shadow:0 3px 12px rgba(14,165,233,.3);}
+.btn-success{background:linear-gradient(135deg,var(--green),#059669);color:#fff;box-shadow:0 3px 12px rgba(16,185,129,.25);}
+.btn-danger{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.3);}
+.btn-danger:hover{background:var(--red);color:#fff;}
+.btn-warn{background:rgba(245,158,11,.12);color:var(--orange);border:1px solid rgba(245,158,11,.25);}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
+.btn-purple{background:linear-gradient(135deg,var(--purple),#7c3aed);color:#fff;box-shadow:0 3px 12px rgba(139,92,246,.3);}
+.btn-full{width:100%;}
+.btn-lg{padding:14px 22px;font-size:1rem;}
+.btn-sm{padding:6px 12px;font-size:.78rem;}
+.inp{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:9px 13px;border-radius:9px;font-size:.9rem;outline:none;transition:border-color .2s;}
+.inp:focus{border-color:var(--blue);}
+.inp::placeholder{color:var(--text3);}
+select.inp{cursor:pointer;-webkit-appearance:none;}
+select.inp option{background:var(--bg3);}
+.lbl{font-size:.72rem;font-weight:600;color:var(--text2);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.4px;}
+.fg{margin-bottom:11px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:.68rem;font-weight:700;}
+.badge-blue{background:rgba(14,165,233,.14);color:var(--blue);}
+.badge-green{background:rgba(16,185,129,.14);color:var(--green);}
+.badge-red{background:rgba(239,68,68,.14);color:var(--red);}
+.badge-orange{background:rgba(245,158,11,.14);color:var(--orange);}
+.badge-purple{background:rgba(139,92,246,.14);color:var(--purple);}
+.par-badge{font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap;}
+.par-A{background:rgba(16,185,129,.14);color:var(--green);}
+.par-B{background:rgba(14,165,233,.14);color:var(--blue);}
+.par-C{background:rgba(139,92,246,.14);color:var(--purple);}
+
+/* TOAST */
+.toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--card2);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:10px;font-size:.83rem;font-weight:600;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:var(--shadow);max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:20px 16px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;animation:slideUp .22s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-title{font-family:var(--font-d);font-size:1.2rem;font-weight:800;color:var(--blue);margin-bottom:14px;}
+.modal-close{float:right;background:none;border:none;color:var(--text3);font-size:1.1rem;cursor:pointer;padding:2px 6px;border-radius:5px;}
+
+/* ── FIREBASE SETUP ── */
+.fb-setup{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+.fb-setup-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:100%;max-width:500px;box-shadow:var(--shadow);}
+.fb-steps{background:var(--bg3);border-radius:9px;padding:14px;margin-bottom:16px;font-size:.8rem;color:var(--text2);line-height:1.8;}
+.fb-steps strong{color:var(--orange);}
+
+/* ── HOME ── */
+.home-hero{background:linear-gradient(145deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:var(--radius);padding:22px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
+.home-hero::before{content:'🎯';position:absolute;right:-8px;bottom:-10px;font-size:80px;opacity:.07;}
+.hero-tag{display:inline-block;font-family:var(--font-d);font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:rgba(14,165,233,.14);color:var(--blue);border:1px solid rgba(14,165,233,.25);padding:3px 10px;border-radius:20px;margin-bottom:8px;}
+.hero-title{font-family:var(--font-d);font-size:1.9rem;font-weight:900;line-height:1.1;margin-bottom:6px;}
+.hero-title span{color:var(--blue);}
+.hero-sub{font-size:.84rem;color:var(--text2);line-height:1.5;}
+.home-cards{display:flex;flex-direction:column;gap:10px;}
+.home-card{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:18px 16px;cursor:pointer;transition:all .22s;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);}
+.home-card:active{transform:scale(.97);}
+.home-card.c-eleve{border-color:rgba(16,185,129,.3);}
+.home-card.c-eleve:hover{border-color:var(--green);}
+.home-card.c-ens{border-color:rgba(239,68,68,.3);}
+.home-card.c-ens:hover{border-color:var(--red);}
+.home-card.c-bar{border-color:rgba(245,158,11,.3);}
+.home-card.c-bar:hover{border-color:var(--orange);}
+.hc-icon{font-size:2.4rem;flex-shrink:0;}
+.hc-text h3{font-family:var(--font-d);font-size:1.2rem;font-weight:800;}
+.hc-text p{font-size:.78rem;color:var(--text2);margin-top:2px;}
+.hc-arrow{margin-left:auto;color:var(--text3);font-size:1.1rem;}
+
+/* ── GRILLE PRÉSENCE ── */
+.presence-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:4px;}
+.presence-card{border-radius:10px;padding:12px;border:2px solid var(--border);background:var(--bg3);transition:all .3s;}
+.presence-card.active{border-color:var(--green);background:rgba(16,185,129,.06);}
+.presence-card.away{border-color:var(--orange);background:rgba(245,158,11,.06);}
+.presence-card.done{border-color:var(--blue);background:rgba(14,165,233,.06);}
+.presence-dot{width:10px;height:10px;border-radius:50%;background:var(--text3);flex-shrink:0;}
+.presence-dot.active{background:var(--green);box-shadow:0 0 8px rgba(16,185,129,.6);}
+.presence-dot.away{background:var(--orange);animation:blink 1.5s ease-in-out infinite;}
+.presence-dot.done{background:var(--blue);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.pc-name{font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pc-meta{font-size:.68rem;color:var(--text2);margin-top:2px;}
+.pc-note{font-family:var(--font-d);font-size:1.1rem;font-weight:900;color:var(--blue);margin-top:4px;}
+
+/* ── PASSAGE ── */
+.chrono-main{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:11px;text-align:center;box-shadow:var(--shadow);}
+.chrono-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text3);margin-bottom:5px;}
+.chrono-disp{font-family:var(--font-d);font-size:3.4rem;font-weight:900;color:var(--text);letter-spacing:2px;line-height:1;font-variant-numeric:tabular-nums;}
+.chrono-disp.running{color:var(--green);animation:pulse .8s ease-in-out infinite alternate;}
+@keyframes pulse{from{opacity:.75;}to{opacity:1;}}
+.chrono-btns{display:flex;gap:8px;margin-top:12px;justify-content:center;flex-wrap:wrap;}
+.passage-card{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);transition:border-color .2s;}
+.passage-card.active-p{border-color:var(--orange);}
+.passage-card.done-p{border-color:var(--green);}
+.passage-num{background:linear-gradient(135deg,var(--orange),#d97706);color:#fff;width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;}
+.passage-hdr{display:flex;align-items:center;gap:8px;margin-bottom:11px;font-family:var(--font-d);font-size:1rem;font-weight:800;}
+.passage-timer{font-family:var(--font-d);font-size:2.1rem;font-weight:900;color:var(--orange);letter-spacing:2px;text-align:center;margin:6px 0;font-variant-numeric:tabular-nums;}
+.passage-timer.done{color:var(--green);}
+
+/* STEPPER */
+.stepper-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;}
+.step-btn{width:46px;height:46px;border-radius:50%;border:2px solid var(--border);background:var(--bg3);color:var(--text);font-size:1.5rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.step-btn:active{transform:scale(.88);background:var(--blue);color:#fff;border-color:var(--blue);}
+.step-val{font-family:var(--font-d);font-size:2rem;font-weight:900;color:var(--text);min-width:44px;text-align:center;}
+
+/* LEDs — FIXED */
+.led-row{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:nowrap;}
+.led{width:38px;height:38px;min-width:38px;border-radius:50%;border:2px solid var(--border);background:var(--bg3);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--text3);flex-shrink:0;}
+.led.on{background:var(--green);border-color:var(--green);box-shadow:0 0 14px rgba(16,185,129,.55);color:#fff;}
+.led:active{transform:scale(.85);}
+
+.taux-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-top:1px solid var(--border);margin-top:6px;}
+.resume-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.resume-item{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;}
+.resume-val{font-family:var(--font-d);font-size:1.35rem;font-weight:900;color:var(--blue);}
+.resume-lbl{font-size:.64rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+.note-final-box{background:linear-gradient(135deg,rgba(14,165,233,.1),rgba(139,92,246,.1));border:2px solid rgba(14,165,233,.25);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:11px;}
+.note-total{font-family:var(--font-d);font-size:2.8rem;font-weight:900;color:var(--blue);}
+
+/* RÉSULTATS */
+.rtable-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:11px;}
+.rtable{width:100%;border-collapse:collapse;font-size:.78rem;min-width:680px;}
+.rtable th{background:var(--bg3);color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;font-size:.63rem;padding:9px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--border);}
+.rtable td{padding:9px 10px;border-bottom:1px solid rgba(42,64,96,.45);color:var(--text);font-weight:500;white-space:nowrap;}
+.rtable tr:last-child td{border-bottom:none;}
+.rtable tr:hover td{background:rgba(255,255,255,.025);}
+.note-cell{font-family:var(--font-d);font-size:.95rem;font-weight:800;}
+
+/* BARÈMES */
+.bar-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.bar-tab{padding:6px 12px;border-radius:20px;border:1px solid var(--border);font-family:var(--font-d);font-size:.78rem;font-weight:700;cursor:pointer;background:transparent;color:var(--text3);transition:all .2s;}
+.bar-tab.active{border-color:var(--blue);color:var(--blue);background:rgba(14,165,233,.07);}
+.bar-section{display:none;}
+.bar-section.active{display:block;}
+.bar-table{width:100%;border-collapse:collapse;}
+.bar-table tr td{padding:6px 10px;font-size:.8rem;border-bottom:1px solid var(--border);}
+.bar-table tr td:first-child{color:var(--text2);}
+.bar-table tr td:last-child{font-weight:800;font-family:var(--font-d);font-size:.95rem;text-align:right;color:var(--blue);}
+.bar-table tr.hl{background:rgba(14,165,233,.04);}
+.parcours-grid{width:100%;border-collapse:collapse;font-size:.8rem;}
+.parcours-grid th,.parcours-grid td{border:1px solid var(--border);padding:8px 10px;text-align:center;}
+.parcours-grid th{background:var(--bg3);font-family:var(--font-d);font-weight:700;font-size:.75rem;color:var(--text2);}
+.pc-1{background:rgba(239,68,68,.18);}
+.pc-2{background:rgba(245,100,11,.18);}
+.pc-3{background:rgba(245,158,11,.18);}
+.pc-4{background:rgba(132,204,22,.18);}
+.pc-5{background:rgba(16,185,129,.18);}
+.pc-val{font-family:var(--font-d);font-size:1.6rem;font-weight:900;}
+
+/* ENSEIGNANT */
+.ens-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:14px;overflow-x:auto;}
+.ens-tab{padding:9px 14px;font-family:var(--font-d);font-size:.82rem;font-weight:700;cursor:pointer;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;color:var(--text3);background:transparent;transition:all .2s;}
+.ens-tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.ens-panel{display:none;}
+.ens-panel.active{display:block;}
+
+/* BANNERS */
+.info-b{background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.25);border-radius:10px;padding:11px 14px;margin-bottom:12px;font-size:.8rem;color:var(--text2);line-height:1.5;}
+.warn-b{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:11px 14px;margin-bottom:12px;font-size:.8rem;color:var(--orange);line-height:1.5;}
+.ok-b{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:10px;padding:11px 14px;margin-bottom:12px;font-size:.8rem;color:var(--green);line-height:1.5;}
+
+/* QUAL */
+.qual-sel-row{display:flex;gap:7px;}
+.qual-sel-btn{flex:1;padding:11px 6px;border-radius:9px;border:1px solid var(--border);background:var(--bg3);font-family:var(--font-d);font-size:1.3rem;font-weight:900;color:var(--text2);cursor:pointer;transition:all .2s;text-align:center;}
+.qual-sel-btn.active{border-color:var(--blue);color:var(--blue);background:rgba(14,165,233,.09);}
+.pw-wrap{position:relative;}
+.pw-toggle{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:.95rem;}
+
+/* CODE SESSION */
+.code-big{font-family:var(--font-d);font-size:2.4rem;font-weight:900;letter-spacing:5px;color:var(--purple);}
+.code-input-style{text-align:center;font-family:var(--font-d);font-size:1.8rem;font-weight:900;letter-spacing:8px;padding:14px;}
+.session-box{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(14,165,233,.08));border:1px solid rgba(139,92,246,.3);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+
+/* LOADER */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* SCANNER */
+#scanner-video{width:100%;max-width:380px;border-radius:var(--radius);display:block;margin:0 auto;background:#000;min-height:200px;}
+.scanner-frame{position:relative;max-width:380px;margin:0 auto;}
+.scanner-overlay{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;}
+.scanner-corner{width:200px;height:200px;border:3px solid var(--blue);border-radius:8px;box-shadow:0 0 0 9999px rgba(0,0,0,.45);}
+
+/* QR */
+.qr-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:11px;}
+.qr-wrap canvas{border-radius:8px;display:inline-block;}
+
+@media(min-width:560px){.page{padding:18px 18px 90px;}.resume-grid{grid-template-columns:repeat(4,1fr);}}
+@media print{.bottom-nav,.topbar,.no-print{display:none!important;}body{background:#fff;color:#000;}.page{display:block!important;padding:0;max-width:100%;}}
+</style>
+</head>
+<body>
+
+<!-- ══════════ ÉCRAN CONFIGURATION FIREBASE ══════════ -->
+<div id="fb-config-screen" class="fb-setup" style="display:none;">
+  <div class="fb-setup-card">
+    <div style="font-family:var(--font-d);font-size:1.4rem;font-weight:900;color:var(--blue);margin-bottom:6px;">🔥 Configuration Firebase</div>
+    <div style="font-size:.82rem;color:var(--text2);margin-bottom:16px;">À faire une seule fois. Créez un projet Firebase gratuit et collez vos clés ci-dessous.</div>
+    <div class="fb-steps">
+      <strong>ÉTAPE 1</strong> — Allez sur <strong>console.firebase.google.com</strong> → créez un projet<br>
+      <strong>ÉTAPE 2</strong> — Dans le menu → Créer → Realtime Database → Démarrer en mode test<br>
+      <strong>ÉTAPE 3</strong> — Paramètres ⚙ → Vos applications → Ajouter app Web &lt;/&gt; → donnez un nom → Enregistrer<br>
+      <strong>ÉTAPE 4</strong> — Copiez les valeurs du bloc <code>firebaseConfig</code> ci-dessous
+    </div>
+    <div class="fg"><label class="lbl">API Key</label><input class="inp" id="fb-apiKey" placeholder="AIzaSy..."></div>
+    <div class="fg"><label class="lbl">Auth Domain</label><input class="inp" id="fb-authDomain" placeholder="projet.firebaseapp.com"></div>
+    <div class="fg"><label class="lbl">Database URL</label><input class="inp" id="fb-databaseURL" placeholder="https://VOTRE-PROJET-default-rtdb.europe-west1.firebasedatabase.app"></div>
+    <div class="fg"><label class="lbl">Project ID</label><input class="inp" id="fb-projectId" placeholder="projet-xxxxx"></div>
+    <div class="fg"><label class="lbl">Storage Bucket</label><input class="inp" id="fb-storageBucket" placeholder="projet.firebasestorage.app"></div>
+    <div class="fg"><label class="lbl">Messaging Sender ID</label><input class="inp" id="fb-messagingSenderId" placeholder="123456789"></div>
+    <div class="fg"><label class="lbl">App ID</label><input class="inp" id="fb-appId" placeholder="1:123456789:web:abc..."></div>
+    <div id="fb-setup-err" class="warn-b" style="display:none;"></div>
+    <button class="btn btn-primary btn-full btn-lg" onclick="saveFbConfig()">🚀 Enregistrer et lancer</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="launchDemoMode()">Mode démo (local uniquement)</button>
+  </div>
+</div>
+
+<!-- ══════════ APP PRINCIPALE ══════════ -->
+<div id="app" style="display:none;">
+
+<div class="topbar">
+  <div class="brand"><div class="brand-dot">🎯</div>Laser Run EPS</div>
+  <div class="topbar-right">
+    <div class="fb-dot" id="fb-status-dot" title="Connexion Firebase"></div>
+    <!-- Session enseignant (verte) -->
+    <span class="ens-sess-chip" id="topbar-ens-sess" style="display:none;" title="Session que vous avez créée (enseignant)">📡 ——</span>
+    <!-- Session élève (violette) -->
+    <span class="elv-sess-chip" id="topbar-session" style="display:none;" onclick="showSessionModal()" title="Session que vous avez rejointe (élève)">Session</span>
+    <button class="tbtn" onclick="generatePDF()" title="PDF">📄</button>
+    <button class="tbtn" onclick="confirmReset()" title="Reset">🔄</button>
+  </div>
+</div>
+
+<!-- ── PAGE ACCUEIL ── -->
+<div id="page-home" class="page active">
+  <div class="home-hero">
+    <div class="hero-tag">🏃 EPS · Laser Run</div>
+    <div class="hero-title">Laser <span>Run</span> EPS</div>
+    <div class="hero-sub">Chronométrage, tir et notation automatique.</div>
+  </div>
+  <div id="home-session-banner"></div>
+  <div class="home-cards">
+    <div class="home-card c-eleve" onclick="navTo('passage')">
+      <div class="hc-icon">🎯</div>
+      <div class="hc-text"><h3>Espace Élève</h3><p>Saisir mon passage, chronomètre & tirs</p></div>
+      <div class="hc-arrow">›</div>
+    </div>
+    <div class="home-card c-ens" onclick="navTo('enseignant')">
+      <div class="hc-icon">👨‍🏫</div>
+      <div class="hc-text"><h3>Espace Enseignant</h3><p>Connexion sécurisée · Résultats · Présence</p></div>
+      <div class="hc-arrow">›</div>
+    </div>
+    <div class="home-card c-bar" onclick="navTo('bareme')">
+      <div class="hc-icon">📋</div>
+      <div class="hc-text"><h3>Consulter les barèmes</h3><p>Parcours, tir, course, projet</p></div>
+      <div class="hc-arrow">›</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;">
+      <div style="font-family:var(--font-d);font-size:1.7rem;font-weight:900;color:var(--blue);" id="h-passages">0</div>
+      <div style="font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;">Passages</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;">
+      <div style="font-family:var(--font-d);font-size:1.7rem;font-weight:900;color:var(--green);" id="h-online">0</div>
+      <div style="font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;">En ligne</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 8px;text-align:center;">
+      <div style="font-family:var(--font-d);font-size:1.7rem;font-weight:900;color:var(--blue);" id="h-moy">—</div>
+      <div style="font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;">Note moy.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE PASSAGE ── -->
+<div id="page-passage" class="page">
+
+  <!-- ÉTAPE 1 : Infos + numéro de pas -->
+  <div id="step-infos">
+    <div style="font-family:var(--font-d);font-size:1.2rem;font-weight:800;margin-bottom:12px;">🎯 Espace Élève</div>
+    <div id="passage-session-info" class="info-b" style="display:none;"></div>
+    <div class="card">
+      <div class="card-title">Informations élève</div>
+      <div class="form-row">
+        <div class="fg"><label class="lbl">Prénom *</label><input class="inp" id="p-prenom" placeholder="Lucas"></div>
+        <div class="fg"><label class="lbl">Nom *</label><input class="inp" id="p-nom" placeholder="Martin"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label class="lbl">Sexe</label>
+          <select class="inp" id="p-sexe"><option value="M">Garçon</option><option value="F">Fille</option></select>
+        </div>
+        <div class="fg"><label class="lbl">Parcours</label>
+          <select class="inp" id="p-parcours" onchange="updateParcoursInfo()">
+            <option value="A">A — 3×150 m</option>
+            <option value="B">B — 3×180 m</option>
+            <option value="C" selected>C — 3×200 m</option>
+          </select>
+        </div>
+      </div>
+      <div id="parcours-info-box" class="info-b" style="margin-bottom:0;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📍 Numéro de pas de course</div>
+      <p style="font-size:.78rem;color:var(--text2);margin-bottom:10px;">Entrez votre numéro de couloir / pas de course. Il s'affichera en <strong style="color:var(--green);">vert</strong> sur l'écran de l'enseignant pour confirmer que vous êtes prêt.</p>
+      <input class="inp" type="number" id="p-piste" min="1" max="30" placeholder="ex : 5" style="text-align:center;font-family:var(--font-d);font-size:1.5rem;font-weight:900;letter-spacing:4px;">
+    </div>
+
+    <div class="card">
+      <div class="card-title">⏱ Temps de projet</div>
+      <p style="font-size:.78rem;color:var(--text2);margin-bottom:10px;">Annoncez votre temps estimé avant le départ. Jusqu'à 2 pts bonus.</p>
+      <div class="form-row">
+        <div class="fg"><label class="lbl">Minutes</label><input class="inp" type="number" id="p-proj-min" min="0" max="59" value="0"></div>
+        <div class="fg"><label class="lbl">Secondes</label><input class="inp" type="number" id="p-proj-sec" min="0" max="59" value="0"></div>
+      </div>
+    </div>
+    <button class="btn btn-success btn-full btn-lg" onclick="startPassage()">🚀 Démarrer le passage</button>
+  </div>
+
+  <!-- ÉTAPE 2 : Chrono -->
+  <div id="step-chrono" style="display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
+      <div>
+        <div style="font-family:var(--font-d);font-size:1rem;font-weight:800;" id="p-eleve-name"></div>
+        <div style="font-size:.72rem;color:var(--text2);" id="p-parcours-info"></div>
+      </div>
+      <span id="p-parcours-badge" class="par-badge"></span>
+    </div>
+    <div class="chrono-main">
+      <div class="chrono-lbl">⏱ Temps total Laser Run</div>
+      <div class="chrono-disp" id="main-chrono">00:00.0</div>
+      <div class="chrono-btns">
+        <button class="btn btn-success" id="btn-main-start" onclick="toggleMain()">▶ Démarrer</button>
+        <button class="btn btn-warn" onclick="pauseMain()">⏸ Pause</button>
+        <button class="btn btn-ghost" onclick="resetMain()">⏹ Reset</button>
+      </div>
+    </div>
+    <div id="passages-container"></div>
+    <div id="resume-section" style="display:none;">
+      <div class="card">
+        <div class="card-title">📋 Récapitulatif</div>
+        <div class="resume-grid" id="resume-grid"></div>
+      </div>
+      <div class="note-final-box">
+        <div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:5px;">NOTE TOTALE</div>
+        <div class="note-total" id="note-totale-val">—</div>
+        <div style="font-size:.78rem;color:var(--text2);margin-top:4px;" id="note-breakdown"></div>
+      </div>
+      <div id="sync-status" class="info-b" style="display:none;"></div>
+      <button class="btn btn-primary btn-full btn-lg" onclick="finaliser()">✅ Enregistrer & Synchroniser</button>
+      <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="resetPassage()">🔄 Nouveau passage</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 3 : Confirmation -->
+  <div id="step-done" style="display:none;">
+    <div style="text-align:center;padding:24px 20px 10px;">
+      <div style="font-size:3rem;margin-bottom:10px;">✅</div>
+      <div style="font-family:var(--font-d);font-size:1.4rem;font-weight:900;color:var(--green);margin-bottom:8px;">Passage enregistré !</div>
+      <div id="done-msg" style="font-size:.85rem;color:var(--text2);line-height:1.5;margin-bottom:10px;"></div>
+    </div>
+    <!-- Statut réel de la synchronisation Firebase -->
+    <div id="sync-status" class="info-b" style="display:none;margin-bottom:10px;"></div>
+    <div class="card" id="fiche-recap"></div>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="resetPassage()">↺ Nouveau passage</button>
+  </div>
+</div>
+
+<!-- ── PAGE RÉSULTATS ── -->
+<div id="page-resultats" class="page">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+    <div style="font-family:var(--font-d);font-size:1.25rem;font-weight:800;">📊 Résultats</div>
+    <button class="btn btn-primary btn-sm" onclick="generatePDF()">📄 PDF</button>
+  </div>
+  <div class="rtable-wrap">
+    <table class="rtable"><thead><tr>
+      <th>Élève</th><th>Parc.</th><th>T.Total</th><th>T.Cible</th><th>T.Course</th>
+      <th>Tirs</th><th>LED</th><th>N.Tir</th><th>N.Course</th><th>Projet</th><th>Total</th><th>Actions</th>
+    </tr></thead><tbody id="results-tbody"></tbody></table>
+  </div>
+  <div id="no-results" style="text-align:center;padding:36px;color:var(--text3);display:none;">
+    <div style="font-size:2rem;margin-bottom:8px;">📊</div><div>Aucun résultat</div>
+  </div>
+</div>
+
+<!-- ── PAGE BARÈMES ── -->
+<div id="page-bareme" class="page">
+  <div style="font-family:var(--font-d);font-size:1.25rem;font-weight:800;margin-bottom:12px;">📋 Barèmes</div>
+  <div class="bar-tabs">
+    <button class="bar-tab active" onclick="showBarTab('bar-parcours',this)">🗺 Parcours</button>
+    <button class="bar-tab" onclick="showBarTab('bar-tir',this)">🎯 Tir</button>
+    <button class="bar-tab" onclick="showBarTab('bar-course',this)">🏃 Course</button>
+    <button class="bar-tab" onclick="showBarTab('bar-projet',this)">⏱ Projet</button>
+  </div>
+
+  <div id="bar-parcours" class="bar-section active">
+    <div class="card">
+      <div class="card-title">Choix du parcours — distances</div>
+      <table class="parcours-grid">
+        <thead><tr><th>Parcours</th><th>Distance</th><th>Total</th><th>Niveau</th></tr></thead>
+        <tbody>
+          <tr><td class="par-A" style="font-weight:700;">A</td><td>3 × 150 m</td><td>450 m</td><td class="pc-3"><div class="pc-val" style="font-size:1.1rem;">Intermédiaire</div></td></tr>
+          <tr><td class="par-B" style="font-weight:700;">B</td><td>3 × 180 m</td><td>540 m</td><td class="pc-4"><div class="pc-val" style="font-size:1.1rem;">Avancé</div></td></tr>
+          <tr><td class="par-C" style="font-weight:700;">C</td><td>3 × 200 m</td><td>600 m</td><td class="pc-5"><div class="pc-val" style="font-size:1.1rem;">Expert</div></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;font-size:.75rem;color:var(--text3);line-height:1.6;">
+        Chaque parcours comporte 3 passages de tir. Le temps de course est normalisé sur 600 m (parcours C) pour le calcul des notes.
+      </div>
+    </div>
+  </div>
+
+  <div id="bar-tir" class="bar-section">
+    <div class="card">
+      <div class="card-title">Barème temps sur cible — note /8</div>
+      <p style="font-size:.75rem;color:var(--red);margin-bottom:8px;">⚠ Pénalité : 10-12 tirs/passage = −0.5 pt · ≥13 tirs/passage = −1 pt</p>
+      <table class="bar-table">
+        <tr class="hl"><td>≤ 01:00</td><td>8</td></tr><tr><td>01:06</td><td>7.5</td></tr>
+        <tr class="hl"><td>01:12</td><td>7</td></tr><tr><td>01:18</td><td>6.5</td></tr>
+        <tr class="hl"><td>01:24</td><td>6</td></tr><tr><td>01:30</td><td>5.5</td></tr>
+        <tr class="hl"><td>01:36</td><td>5</td></tr><tr><td>01:42</td><td>4.5</td></tr>
+        <tr class="hl"><td>01:48</td><td>4</td></tr><tr><td>01:54</td><td>3.5</td></tr>
+        <tr class="hl"><td>02:00</td><td>3</td></tr><tr><td>02:06</td><td>2.5</td></tr>
+        <tr class="hl"><td>02:12</td><td>2</td></tr><tr><td>02:18</td><td>1.5</td></tr>
+        <tr class="hl"><td>02:24</td><td>1</td></tr><tr><td>≥ 02:30</td><td>0.25</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div id="bar-course" class="bar-section">
+    <div class="card">
+      <div class="card-title">Barème course — Garçons /5</div>
+      <p style="font-size:.75rem;color:var(--text2);margin-bottom:8px;">Normalisé sur 600 m (parcours C). Parcours A et B : temps ajusté proportionnellement.</p>
+      <table class="bar-table">
+        <tr class="hl"><td>≤ 03:00</td><td>5</td></tr><tr><td>03:30</td><td>5</td></tr>
+        <tr class="hl"><td>03:45</td><td>4.5</td></tr><tr><td>04:00</td><td>4</td></tr>
+        <tr class="hl"><td>04:15</td><td>3.5</td></tr><tr><td>04:30</td><td>3</td></tr>
+        <tr class="hl"><td>04:45</td><td>2.5</td></tr><tr><td>05:00</td><td>2</td></tr>
+        <tr class="hl"><td>05:15</td><td>1.5</td></tr><tr><td>05:30</td><td>1</td></tr>
+        <tr class="hl"><td>05:45</td><td>0.5</td></tr><tr><td>≥ 06:00</td><td>0.25</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Barème course — Filles /5</div>
+      <table class="bar-table">
+        <tr class="hl"><td>≤ 04:00</td><td>5</td></tr><tr><td>04:30</td><td>5</td></tr>
+        <tr class="hl"><td>04:45</td><td>4.5</td></tr><tr><td>05:00</td><td>4</td></tr>
+        <tr class="hl"><td>05:15</td><td>3.5</td></tr><tr><td>05:30</td><td>3</td></tr>
+        <tr class="hl"><td>05:45</td><td>2.5</td></tr><tr><td>06:00</td><td>2</td></tr>
+        <tr class="hl"><td>06:15</td><td>1.5</td></tr><tr><td>06:30</td><td>1</td></tr>
+        <tr class="hl"><td>06:45</td><td>0.5</td></tr><tr><td>≥ 07:00</td><td>0.25</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div id="bar-projet" class="bar-section">
+    <div class="card">
+      <div class="card-title">Barème projet /2</div>
+      <table class="bar-table">
+        <tr class="hl"><td>Écart ≤ 30 s</td><td>2</td></tr>
+        <tr><td>Écart ≤ 1 min</td><td>1</td></tr>
+        <tr class="hl"><td>Écart &gt; 1 min</td><td>0</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE ENSEIGNANT ── -->
+<div id="page-enseignant" class="page">
+  <div id="ens-login" style="display:none;">
+    <div style="font-family:var(--font-d);font-size:1.25rem;font-weight:800;margin-bottom:14px;">👨‍🏫 Espace Enseignant</div>
+    <div class="card" id="login-card"></div>
+  </div>
+  <div id="ens-content" style="display:none;">
+    <div style="font-family:var(--font-d);font-size:1.25rem;font-weight:800;margin-bottom:12px;">👨‍🏫 Espace Enseignant</div>
+    <div class="ens-tabs">
+      <button class="ens-tab active" id="etb-pres" onclick="showEnsTab('ep-presence',this)">🟢 Présence</button>
+      <button class="ens-tab" id="etb-res" onclick="showEnsTab('ep-resultats',this)">📋 Résultats</button>
+      <button class="ens-tab" id="etb-sess" onclick="showEnsTab('ep-session',this)">📡 Session</button>
+      <button class="ens-tab" id="etb-scan" onclick="showEnsTab('ep-scanner',this)">📷 Scanner</button>
+      <button class="ens-tab" id="etb-gest" onclick="showEnsTab('ep-gestion',this)">⚙ Gestion</button>
+    </div>
+
+    <!-- PRÉSENCE -->
+    <div id="ep-presence" class="ens-panel active">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+        <div class="card-title" style="margin:0;">Élèves connectés en temps réel</div>
+        <div style="display:flex;gap:6px;align-items:center;font-size:.75rem;color:var(--text2);">
+          <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span>Actif</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--orange);display:inline-block;"></span>Absent/autre app</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block;"></span>Terminé</span>
+        </div>
+      </div>
+      <div id="presence-grid" class="presence-grid">
+        <div style="text-align:center;padding:30px;color:var(--text3);grid-column:1/-1;font-size:.85rem;">
+          En attente de connexion des élèves…<br>Créez une session et donnez le code aux élèves.
+        </div>
+      </div>
+    </div>
+
+    <!-- RÉSULTATS -->
+    <div id="ep-resultats" class="ens-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+        <div class="card-title" style="margin:0;">Résultats élèves</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;">
+          <button class="btn btn-success btn-sm" onclick="fbRecuperer()">🔄 Sync Firebase</button>
+          <button class="btn btn-primary btn-sm" onclick="generatePDF()">📄 PDF</button>
+          <button class="btn btn-ghost btn-sm" onclick="confirmClearAll()">🗑 Vider</button>
+        </div>
+      </div>
+      <div class="rtable-wrap">
+        <table class="rtable"><thead><tr>
+          <th>Élève</th><th>Parc.</th><th>T.Total</th><th>T.Cible</th><th>T.Course</th>
+          <th>Tirs</th><th>LED</th><th>N.Tir</th><th>N.Course</th><th>Projet</th><th>Total</th><th>Qual.</th><th>Actions</th>
+        </tr></thead><tbody id="ens-tbody"></tbody></table>
+      </div>
+      <div id="ens-no-results" style="text-align:center;padding:28px;color:var(--text3);">
+        <div style="font-size:1.8rem;margin-bottom:7px;">📊</div>
+        <div>Aucun résultat — les passages élèves apparaissent automatiquement ici</div>
+      </div>
+    </div>
+
+    <!-- SESSION -->
+    <div id="ep-session" class="ens-panel">
+      <div class="card">
+        <div class="card-title">📡 Session Firebase en temps réel</div>
+        <p style="font-size:.8rem;color:var(--text2);margin-bottom:12px;line-height:1.5;">
+          Créez un code de session → donnez-le à vos élèves → leurs résultats et leur présence arrivent instantanément, sans rafraîchissement.
+        </p>
+        <div id="session-active-block" style="display:none;">
+          <div class="session-box">
+            <div>
+              <div style="font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;">Session active</div>
+              <div class="code-big" id="sess-display-code">——</div>
+              <div style="font-size:.74rem;color:var(--text2);margin-top:3px;" id="sess-display-count">0 résultat reçu</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+              <button class="btn btn-primary btn-sm" id="btn-fb-refresh" onclick="fbRecuperer()">🔄 Récupérer maintenant</button>
+              <button class="btn btn-danger btn-sm" onclick="endSession()">Terminer la session</button>
+            </div>
+          </div>
+          <div class="ok-b">✅ Firebase actif. Les résultats arrivent automatiquement. Si un résultat manque, cliquez <strong>Récupérer maintenant</strong>.</div>
+          <div id="fb-last-sync" style="font-size:.72rem;color:var(--text3);text-align:right;margin-top:4px;"></div>
+        </div>
+        <div id="session-create-block">
+          <div class="fg">
+            <label class="lbl">Créer un code de session</label>
+            <div style="display:flex;gap:8px;">
+              <input class="inp code-input-style" type="text" id="new-sess-input" maxlength="6" placeholder="1234" inputmode="numeric" style="flex:1;">
+              <button class="btn btn-ghost btn-sm" onclick="genCode()" style="white-space:nowrap;flex-shrink:0;">🎲 Auto</button>
+            </div>
+          </div>
+          <button class="btn btn-purple btn-full" onclick="createSession()">📡 Démarrer la session</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCANNER -->
+    <div id="ep-scanner" class="ens-panel">
+      <div class="card">
+        <div class="card-title">📷 Scanner le QR Code d'un élève</div>
+        <p style="font-size:.8rem;color:var(--text2);margin-bottom:10px;">Pointez la caméra vers le QR code.</p>
+        <div id="cam-banner" class="info-b" style="display:none;">📷 Autorisez l'accès à la caméra.</div>
+        <div class="scanner-frame" style="margin-bottom:12px;">
+          <video id="scanner-video" playsinline muted></video>
+          <canvas id="scanner-canvas" style="display:none;"></canvas>
+          <div class="scanner-overlay"><div class="scanner-corner"></div></div>
+        </div>
+        <div id="scanner-result" style="display:none;margin-bottom:12px;"></div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="btn-scan-start" onclick="startScanner()">📷 Démarrer la caméra</button>
+          <button class="btn btn-ghost" id="btn-scan-stop" onclick="stopScanner()" style="display:none;">⏹ Arrêter</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GESTION -->
+    <div id="ep-gestion" class="ens-panel">
+      <div class="card">
+        <div class="card-title">🔥 Reconfigurer Firebase</div>
+        <p style="font-size:.8rem;color:var(--text2);margin-bottom:10px;">Cliquez pour modifier la configuration Firebase (clés API, base de données).</p>
+        <button class="btn btn-warn btn-full" onclick="resetFbConfig()">⚙ Modifier la configuration Firebase</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Changer le mot de passe</div>
+        <div class="fg"><label class="lbl">Ancien</label><div class="pw-wrap"><input class="inp" type="password" id="g-old-pw"><button class="pw-toggle" onclick="togglePw('g-old-pw')">👁</button></div></div>
+        <div class="fg"><label class="lbl">Nouveau</label><div class="pw-wrap"><input class="inp" type="password" id="g-new-pw1"><button class="pw-toggle" onclick="togglePw('g-new-pw1')">👁</button></div></div>
+        <div class="fg"><label class="lbl">Confirmer</label><div class="pw-wrap"><input class="inp" type="password" id="g-new-pw2"><button class="pw-toggle" onclick="togglePw('g-new-pw2')">👁</button></div></div>
+        <div id="pw-msg" style="font-size:.78rem;margin-bottom:8px;display:none;"></div>
+        <button class="btn btn-danger" onclick="changePw()">Modifier</button>
+      </div>
+      <div class="card">
+        <button class="btn btn-ghost btn-full" onclick="logoutEns()">🚪 Se déconnecter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- fin #app -->
+
+<!-- NAV -->
+<nav class="bottom-nav" id="main-nav" style="display:none;">
+  <button class="nav-item active" onclick="navTo('home')" id="nav-home"><span class="ni">🏠</span>Accueil</button>
+  <button class="nav-item" onclick="navTo('passage')" id="nav-passage"><span class="ni">🎯</span>Passage</button>
+  <button class="nav-item" onclick="navTo('resultats')" id="nav-resultats"><span class="ni">📊</span>Résultats</button>
+  <button class="nav-item" onclick="navTo('bareme')" id="nav-bareme"><span class="ni">📋</span>Barèmes</button>
+  <button class="nav-item" onclick="navTo('enseignant')" id="nav-enseignant"><span class="ni">👨‍🏫</span>Enseignant</button>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<!-- MODAL QUAL -->
+<div id="modal-qual" class="modal-overlay" onclick="closeModalOut(event,'modal-qual')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-qual')">✕</button>
+    <div class="modal-title">⭐ Note qualitative</div>
+    <p style="font-size:.82rem;color:var(--text2);margin-bottom:12px;" id="mq-nom"></p>
+    <div class="qual-sel-row" style="margin-bottom:10px;">
+      <button class="qual-sel-btn" onclick="setQual(1)">1</button>
+      <button class="qual-sel-btn" onclick="setQual(2)">2</button>
+      <button class="qual-sel-btn" onclick="setQual(3)">3</button>
+      <button class="qual-sel-btn" onclick="setQual(4)">4</button>
+    </div>
+    <div id="qual-desc" style="font-size:.78rem;color:var(--text2);min-height:28px;margin-bottom:12px;"></div>
+    <button class="btn btn-primary btn-full" onclick="saveQual()">Enregistrer</button>
+  </div>
+</div>
+
+<!-- MODAL SESSION ÉLÈVE -->
+<div id="modal-session" class="modal-overlay" onclick="closeModalOut(event,'modal-session')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-session')">✕</button>
+    <div class="modal-title">📡 Code de session</div>
+    <p style="font-size:.82rem;color:var(--text2);margin-bottom:14px;">Entrez le code donné par votre enseignant pour que votre résultat lui soit envoyé automatiquement.</p>
+    <div class="fg">
+      <label class="lbl">Code de session</label>
+      <input class="inp code-input-style" type="text" id="eleve-sess-input" maxlength="6" inputmode="numeric" placeholder="——">
+    </div>
+    <div id="sess-modal-err" class="warn-b" style="display:none;"></div>
+    <button class="btn btn-purple btn-full" onclick="joinSession()">✅ Rejoindre</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal('modal-session')">Continuer sans session</button>
+  </div>
+</div>
+
+<!-- Firebase SDK — chargé avant le script principal -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════════════
+   FIREBASE CONFIG & INIT
+══════════════════════════════════════════ */
+const FB_CONFIG_KEY = 'lr_firebase_config';
+let db = null;
+let _fbDemoMode = false;
+
+function getFbConfig(){
+  try{ return JSON.parse(localStorage.getItem(FB_CONFIG_KEY)); }catch(e){ return null; }
+}
+
+function initFirebase(cfg){
+
+  // ── Diagnostic protocole ──────────────────────────────────
+  // Firebase ne fonctionne PAS en file:// — il faut HTTPS
+  if(location.protocol === 'file:'){
+    console.error('[Firebase] Protocole file:// détecté. Firebase nécessite HTTPS.');
+    return false;
+  }
+
+  // ── Vérifier que le SDK Firebase est chargé ───────────────
+  if(typeof firebase === 'undefined'){
+    console.error('[Firebase] SDK non chargé depuis le CDN Google.');
+    return false;
+  }
+
+  try{
+    // ── Réinitialisation propre si besoin ─────────────────────
+    if(firebase.apps.length > 0){
+      const existing = firebase.app();
+      if(existing.options.databaseURL === cfg.databaseURL){
+        // Même config → réutiliser
+        db = firebase.database();
+        db.ref('.info/connected').on('value', snap=>{
+          const dot = document.getElementById('fb-status-dot');
+          if(dot) dot.className = snap.val() ? 'fb-dot ok' : 'fb-dot err';
+        });
+        return true;
+      }
+      try{ existing.delete(); }catch(e2){}
+    }
+
+    // ── Initialisation ────────────────────────────────────────
+    firebase.initializeApp(cfg);
+    db = firebase.database();
+
+    db.ref('.info/connected').on('value', snap=>{
+      const dot = document.getElementById('fb-status-dot');
+      if(dot) dot.className = snap.val() ? 'fb-dot ok' : 'fb-dot err';
+    });
+
+    console.log('[Firebase] ✅ Connecté →', cfg.databaseURL);
+    return true;
+
+  }catch(e){
+    console.error('[Firebase] Erreur init :', e.message || e);
+    return false;
+  }
+}
+
+function saveFbConfig(){
+  const fields = ['apiKey','authDomain','databaseURL','projectId','storageBucket','messagingSenderId','appId'];
+  const cfg = {};
+  let allOk = true;
+  fields.forEach(f=>{
+    const v = (document.getElementById('fb-'+f)||{}).value?.trim()||'';
+    if(!v) allOk = false;
+    cfg[f] = v;
+  });
+  const err = document.getElementById('fb-setup-err');
+  if(!allOk){
+    err.textContent = '⚠ Veuillez remplir tous les champs.';
+    err.style.display = '';
+    return;
+  }
+  if(!cfg.databaseURL.includes('firebasedatabase')){
+    err.textContent = '⚠ L\'URL de la base doit contenir "firebasedatabase". Vérifiez l\'URL dans Firebase → Realtime Database.';
+    err.style.display = '';
+    return;
+  }
+  err.style.display = 'none';
+  localStorage.setItem(FB_CONFIG_KEY, JSON.stringify(cfg));
+  const ok = initFirebase(cfg);
+  if(ok){
+    launchApp();
+  }else{
+    err.textContent = '❌ Erreur d\'initialisation Firebase. Vérifiez vos clés.';
+    err.style.display = '';
+  }
+}
+
+function launchDemoMode(){
+  _fbDemoMode = true;
+  launchApp();
+}
+
+function resetFbConfig(){
+  db = null;
+  _fbDemoMode = false;
+  const ok = initFirebase(FIREBASE_CONFIG);
+  if(!ok){ _fbDemoMode = true; }
+  launchApp();
+}
+
+function launchApp(){
+  document.getElementById('fb-config-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('main-nav').style.display = 'flex';
+  if(_fbDemoMode){
+    const dot = document.getElementById('fb-status-dot');
+    if(dot){ dot.className = 'fb-dot'; dot.title = 'Mode local (démo)';}
+  }
+  load();
+  updateParcoursInfo();
+  updateSessionUI();
+  renderHome();
+  document.querySelectorAll('.modal-overlay').forEach(m=>m.style.display='none');
+}
+
+/* ══════════════════════════════════════════
+   STATE & STORAGE
+══════════════════════════════════════════ */
+let state = {eleves:[], passages:[]};
+const SK = 'laserrun_v7';
+function save(){ try{ localStorage.setItem(SK,JSON.stringify(state)); }catch(e){} }
+function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(SK));
+    if(d){ state.eleves=d.eleves||[]; state.passages=d.passages||[]; }
+  }catch(e){}
+}
+
+/* ══════════════════════════════════════════
+   PARCOURS & BARÈMES
+══════════════════════════════════════════ */
+const PI = {
+  'A':{label:'A', dist:450, distPerLap:150},
+  'B':{label:'B', dist:540, distPerLap:180},
+  'C':{label:'C', dist:600, distPerLap:200},
+};
+const REF = 600;
+
+const BC=[[30,8],[60,8],[63,7.75],[66,7.5],[69,7.25],[72,7],[75,6.75],[78,6.5],[81,6.25],[84,6],[87,5.75],[90,5.5],[93,5.25],[96,5],[99,4.75],[102,4.5],[105,4.25],[108,4],[111,3.75],[114,3.5],[117,3.25],[120,3],[123,2.75],[126,2.5],[129,2.25],[132,2],[135,1.75],[138,1.5],[141,1.25],[144,1],[147,0.75],[149,0.5],[150,0.25]];
+const BCM=[[180,5],[210,5],[225,4.5],[240,4],[255,3.5],[270,3],[285,2.5],[300,2],[315,1.5],[330,1],[345,0.5],[360,0.25]];
+const BCF=[[240,5],[270,5],[285,4.5],[300,4],[315,3.5],[330,3],[345,2.5],[360,2],[375,1.5],[390,1],[405,0.5],[420,0.25]];
+
+function noteCible(s){ for(const[l,n]of BC)if(s<=l)return n; return 0.25; }
+function noteCourse(cs,sexe,p){
+  const dist=(PI[String(p)]||{dist:600}).dist;
+  const adj=cs*(REF/dist);
+  const b=sexe==='F'?BCF:BCM;
+  for(const[l,n]of b)if(adj<=l)return n;
+  return 0.25;
+}
+function penalite(tirs){ let p=0; for(const t of tirs){if(t.nb>=13)p+=1;else if(t.nb>=10)p+=0.5;} return p; }
+function noteProjet(proj,real){ if(!proj)return 0; const d=Math.abs(proj-real); if(d<=30)return 2; if(d<=60)return 1; return 0; }
+
+function updateParcoursInfo(){
+  const v = (document.getElementById('p-parcours')||{value:'C'}).value;
+  const info = PI[v];
+  const box = document.getElementById('parcours-info-box');
+  if(box&&info) box.innerHTML = '🏃 Course : <strong>3 × '+info.distPerLap+' m</strong> ('+info.dist+' m total) &nbsp;|&nbsp; 🎯 Tir : <strong>même distance pour tous</strong>';
+}
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function navTo(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  const pg=document.getElementById('page-'+p);
+  const nv=document.getElementById('nav-'+p);
+  if(pg)pg.classList.add('active');
+  if(nv)nv.classList.add('active');
+  if(p==='home')renderHome();
+  if(p==='resultats')renderResultats();
+  if(p==='enseignant')initEns();
+  window.scrollTo(0,0);
+}
+
+/* ══════════════════════════════════════════
+   TOAST & MODALS
+══════════════════════════════════════════ */
+function toast(msg,dur=2800){
+  const el=document.getElementById('toast');
+  if(!el)return;
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),dur);
+}
+function openModal(id){ const el=document.getElementById(id);if(el){el.style.display='flex';setTimeout(()=>el.classList.add('open'),10);} }
+function closeModal(id){ const el=document.getElementById(id);if(el){el.classList.remove('open');setTimeout(()=>{if(!el.classList.contains('open'))el.style.display='none';},250);} }
+function closeModalOut(e,id){ if(e.target===document.getElementById(id))closeModal(id); }
+
+/* ══════════════════════════════════════════
+   HOME
+══════════════════════════════════════════ */
+function renderHome(){
+  const np=document.getElementById('h-passages');
+  const nm=document.getElementById('h-moy');
+  if(np)np.textContent=state.passages.length;
+  if(nm){
+    if(state.passages.length){
+      const avg=state.passages.reduce((s,p)=>s+(p.notes&&p.notes.total!=null?p.notes.total:0),0)/state.passages.length;
+      nm.textContent=avg.toFixed(1);
+    }else nm.textContent='—';
+  }
+  // Compter élèves en ligne
+  if(_fbPresenceListeners){
+    const onlineCount = Object.values(_presenceData||{}).filter(p=>p.status==='active'||p.status==='away').length;
+    const el=document.getElementById('h-online');
+    if(el)el.textContent=onlineCount;
+  }
+}
+
+/* ══════════════════════════════════════════
+   PRÉSENCE FIREBASE
+══════════════════════════════════════════ */
+let _presenceData = {};
+let _fbPresenceListeners = false;
+let _visibilityKey = null;
+let _activityTimer = null;
+const AWAY_TIMEOUT = 30000; // 30s sans activité = "away"
+
+function setupPresenceForEleve(sessionCode, eleveId, nom, piste){
+  if(!db||_fbDemoMode) return;
+  const ref = db.ref('sessions/'+sessionCode+'/presence/'+eleveId);
+  const presObj = {
+    nom: nom,
+    piste: piste||'?',
+    status: 'active',
+    lastSeen: Date.now()
+  };
+  ref.set(presObj);
+  ref.onDisconnect().update({status:'offline', lastSeen: firebase.database.ServerValue.TIMESTAMP});
+
+  // Détecter inactivité (autre app, écran verrouillé)
+  _visibilityKey = eleveId;
+  const updateActivity = (status)=>{
+    if(!db||_fbDemoMode) return;
+    ref.update({status: status, lastSeen: Date.now()});
+  };
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden){
+      updateActivity('away');
+    }else{
+      updateActivity('active');
+      clearTimeout(_activityTimer);
+    }
+  });
+  // Timer inactivité
+  const resetTimer = ()=>{
+    clearTimeout(_activityTimer);
+    if(!document.hidden) updateActivity('active');
+    _activityTimer = setTimeout(()=>updateActivity('away'), AWAY_TIMEOUT);
+  };
+  ['touchstart','click','keydown','scroll','mousemove'].forEach(ev=>{
+    document.addEventListener(ev, resetTimer, {passive:true});
+  });
+  resetTimer();
+}
+
+function removePresence(sessionCode, eleveId){
+  if(!db||_fbDemoMode) return;
+  db.ref('sessions/'+sessionCode+'/presence/'+eleveId).remove();
+}
+
+function markElevelDone(sessionCode, eleveId){
+  if(!db||_fbDemoMode) return;
+  db.ref('sessions/'+sessionCode+'/presence/'+eleveId).update({status:'done', lastSeen: Date.now()});
+}
+
+function listenPresence(sessionCode){
+  if(!db||_fbDemoMode) return;
+  _fbPresenceListeners = true;
+  db.ref('sessions/'+sessionCode+'/presence').on('value', snap=>{
+    _presenceData = snap.val()||{};
+    renderPresenceGrid();
+    renderHome();
+  });
+}
+
+function renderPresenceGrid(){
+  const grid = document.getElementById('presence-grid');
+  if(!grid) return;
+  const entries = Object.entries(_presenceData||{});
+  if(!entries.length){
+    grid.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);grid-column:1/-1;font-size:.85rem;">En attente de connexion des élèves…</div>';
+    return;
+  }
+  const countEl = document.getElementById('h-online');
+  const onlineCount = entries.filter(([,p])=>p.status==='active'||p.status==='away').length;
+  if(countEl) countEl.textContent = onlineCount;
+
+  grid.innerHTML = entries.map(([uid, p])=>{
+    const statusClass = p.status==='active'?'active': p.status==='done'?'done': p.status==='offline'?'':'away';
+    const statusLabel = p.status==='active'?'Actif': p.status==='done'?'Terminé': p.status==='offline'?'Hors ligne':'Absent';
+    const dotClass = p.status==='active'?'active': p.status==='done'?'done': p.status==='offline'?'':'away';
+    const awayWarning = p.status==='away'?'<div style="font-size:.65rem;color:var(--orange);margin-top:3px;">⚠ Sur une autre app</div>':'';
+    const offlineWarn = p.status==='offline'?'<div style="font-size:.65rem;color:var(--red);margin-top:3px;">📵 Déconnecté</div>':'';
+
+    // Note si passage terminé
+    const passageFini = state.passages.find(x=>x.prenomNom===p.nom);
+    const noteDisp = passageFini && passageFini.notes ? '<div class="pc-note">'+passageFini.notes.total.toFixed(1)+'/15</div>' : '';
+
+    return '<div class="presence-card '+statusClass+'">'
+      +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">'
+      +'<div class="presence-dot '+dotClass+'"></div>'
+      +'<div class="pc-name">'+esc(p.nom||'?')+'</div>'
+      +'</div>'
+      +'<div class="pc-meta">Piste <strong style="color:var(--green);font-size:.9rem;">'+esc(String(p.piste||'?'))+'</strong></div>'
+      +'<div class="pc-meta" style="margin-top:1px;">'+statusLabel+'</div>'
+      + awayWarning + offlineWarn + noteDisp
+      +'</div>';
+  }).join('');
+}
+
+/* ══════════════════════════════════════════
+   PASSAGE ÉLÈVE
+══════════════════════════════════════════ */
+let _pd = null;
+let _eleveSession = null;
+let _elevePresenceId = null;
+
+function startPassage(){
+  const prenom = document.getElementById('p-prenom').value.trim();
+  const nom = document.getElementById('p-nom').value.trim();
+  if(!prenom||!nom){toast('⚠ Prénom et nom obligatoires');return;}
+  const sexe = document.getElementById('p-sexe').value;
+  const parcours = document.getElementById('p-parcours').value;
+  const piste = document.getElementById('p-piste').value.trim();
+  const pMin = parseInt(document.getElementById('p-proj-min').value)||0;
+  const pSec = parseInt(document.getElementById('p-proj-sec').value)||0;
+
+  _pd = {prenom,nom,sexe,parcours,piste,projetSecs:pMin*60+pSec,
+    tirs:[{secs:0,nb:0,led:0,done:false},{secs:0,nb:0,led:0,done:false},{secs:0,nb:0,led:0,done:false}],
+    _c:null};
+
+  // Présence Firebase
+  if(_eleveSession && piste){
+    _elevePresenceId = 'eleve_'+(prenom+nom).replace(/\s/g,'_')+'_'+Date.now();
+    setupPresenceForEleve(_eleveSession, _elevePresenceId, prenom+' '+nom+' (Piste '+piste+')', piste);
+  }
+
+  document.getElementById('step-infos').style.display='none';
+  document.getElementById('step-chrono').style.display='block';
+  document.getElementById('step-done').style.display='none';
+  document.getElementById('p-eleve-name').textContent=prenom+' '+nom;
+  const info=PI[parcours];
+  document.getElementById('p-parcours-info').textContent='Parcours '+parcours+' · 3×'+info.distPerLap+' m';
+  const b=document.getElementById('p-parcours-badge');
+  b.textContent='Parcours '+parcours;b.className='par-badge par-'+parcours;
+  resetMain();buildPassages();
+  document.getElementById('resume-section').style.display='none';
+}
+
+/* ── CHRONO ── */
+let MT={running:false,elapsed:0,iv:null,t0:0};
+function toggleMain(){MT.running?pauseMain():startMain();}
+function startMain(){
+  if(MT.running)return;
+  MT.running=true;MT.t0=Date.now()-MT.elapsed;
+  clearInterval(MT.iv);
+  MT.iv=setInterval(()=>{MT.elapsed=Date.now()-MT.t0;updMain();},50);
+  const b=document.getElementById('btn-main-start');if(b)b.textContent='⏸ Pause';
+  const d=document.getElementById('main-chrono');if(d)d.classList.add('running');
+}
+function pauseMain(){
+  if(!MT.running)return;
+  MT.running=false;clearInterval(MT.iv);
+  const b=document.getElementById('btn-main-start');if(b)b.textContent='▶ Reprendre';
+  const d=document.getElementById('main-chrono');if(d)d.classList.remove('running');
+}
+function resetMain(){
+  pauseMain();MT.elapsed=0;MT.t0=0;
+  const d=document.getElementById('main-chrono');
+  if(d){d.textContent='00:00.0';d.classList.remove('running');}
+  const b=document.getElementById('btn-main-start');if(b)b.textContent='▶ Démarrer';
+}
+function updMain(){
+  const ms=MT.elapsed,ds=Math.floor(ms/100),s=Math.floor(ds/10);
+  const d=document.getElementById('main-chrono');
+  if(d)d.textContent=p2(Math.floor(s/60))+':'+p2(s%60)+'.'+ds%10;
+}
+function mainSecs(){return Math.floor(MT.elapsed/1000);}
+
+/* ── PASSAGES TIR ── */
+let PT=[
+  {running:false,elapsed:0,iv:null,t0:0},
+  {running:false,elapsed:0,iv:null,t0:0},
+  {running:false,elapsed:0,iv:null,t0:0}
+];
+
+function buildPassages(){
+  PT=[{running:false,elapsed:0,iv:null,t0:0},{running:false,elapsed:0,iv:null,t0:0},{running:false,elapsed:0,iv:null,t0:0}];
+  const c=document.getElementById('passages-container');
+  if(c)c.innerHTML=[0,1,2].map(i=>buildCard(i)).join('');
+}
+
+function buildCard(i){
+  const p=_pd.tirs[i],t=PT[i],n=i+1;
+  const ms=t.elapsed,ds=Math.floor(ms/100),s=Math.floor(ds/10);
+  const tStr=p2(Math.floor(s/60))+':'+p2(s%60)+'.'+ds%10;
+  const sc=p.done?'done-p':(t.running?'active-p':'');
+  const pen=ppSingle(p.nb);
+  const penTxt=pen>0?'<div style="font-size:.68rem;color:var(--red);text-align:center;margin-top:4px;">⚠ Pénalité −'+pen+' pt</div>':'<div style="font-size:.68rem;color:var(--text3);text-align:center;margin-top:4px;">✓ Pas de pénalité</div>';
+  const leds=[1,2,3,4,5].map(l=>'<div class="led '+(l<=p.led?'on':'')+'" onclick="tapLED('+i+')">'+l+'</div>').join('');
+
+  return '<div class="passage-card '+sc+'" id="pc-'+i+'">'
+    +'<div class="passage-hdr"><span class="passage-num">'+n+'</span> Passage de tir '+n
+    +(p.done?'<span class="badge badge-green" style="margin-left:auto;">✓ Terminé</span>':'')+'</div>'
+    +'<div style="font-size:.68rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">⏱ Temps sur la cible</div>'
+    +'<div class="passage-timer '+(p.done?'done':'')+'" id="pt-'+i+'">'+tStr+'</div>'
+    +'<div style="display:flex;gap:7px;margin-bottom:11px;flex-wrap:wrap;">'
+    +'<button class="btn '+(t.running?'btn-warn':'btn-success')+' btn-sm" id="pbtn-'+i+'" onclick="togglePT('+i+')">'+(t.running?'⏸ Stop':(p.done?'↺ Rechrono':'▶ Start'))+'</button>'
+    +'<button class="btn btn-ghost btn-sm" onclick="resetPT('+i+')">⏹ Reset</button></div>'
+    // Grille tirs + LEDs - FIXÉ : pas de débordement
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;">'
+    // Tirs
+    +'<div>'
+    +'<div style="font-size:.68rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;text-align:center;">Nombre de tirs</div>'
+    +'<div class="stepper-row">'
+    +'<button class="step-btn" onclick="stepTirs('+i+',-1)">−</button>'
+    +'<div class="step-val" id="nb-'+i+'">'+p.nb+'</div>'
+    +'<button class="step-btn" onclick="stepTirs('+i+',+1)">+</button>'
+    +'</div>'+penTxt
+    +'</div>'
+    // LEDs
+    +'<div>'
+    +'<div style="font-size:.68rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;text-align:center;">LED allumées (tap pour ajouter)</div>'
+    +'<div class="led-row">'+leds+'</div>'
+    +'<div style="text-align:center;font-size:.7rem;color:var(--text3);margin-top:5px;">'+p.led+'/5 LED</div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="taux-row">'
+    +'<span style="font-size:.76rem;color:var(--text2);">Taux de réussite</span>'
+    +'<span class="badge '+tauxCls(p.nb,p.led)+'">'+getTaux(p.nb,p.led)+'</span>'
+    +'</div>'
+    +(p.done
+      ?'<button class="btn btn-ghost btn-sm btn-full" style="margin-top:7px;" onclick="undoP('+i+')">↩ Modifier</button>'
+      :'<button class="btn btn-primary btn-sm btn-full" style="margin-top:7px;" onclick="validerP('+i+')">✅ Valider passage '+n+'</button>'
+    )
+    +'</div>';
+}
+
+function ppSingle(nb){ if(nb>=13)return 1; if(nb>=10)return 0.5; return 0; }
+
+// LED séquentielle : chaque tap +1 dans l'ordre (0→1→2→3→4→5→0)
+function tapLED(i){
+  if(!_pd)return;
+  _pd.tirs[i].led = (_pd.tirs[i].led + 1) % 6;
+  refreshCard(i);
+}
+
+function stepTirs(i,d){
+  if(!_pd)return;
+  _pd.tirs[i].nb=Math.max(0,(_pd.tirs[i].nb||0)+d);
+  refreshCard(i);
+}
+
+function refreshCard(i){
+  const old=document.getElementById('pc-'+i);
+  if(!old)return;
+  const wasRunning=PT[i].running;
+  const div=document.createElement('div');
+  div.innerHTML=buildCard(i);
+  old.parentNode.replaceChild(div.firstChild,old);
+}
+
+function togglePT(i){
+  if(!_pd)return;
+  if(!PT[i].running){
+    if(!MT.running)startMain();
+    PT[i].running=true;PT[i].t0=Date.now()-PT[i].elapsed;
+    clearInterval(PT[i].iv);
+    PT[i].iv=setInterval(()=>{
+      PT[i].elapsed=Date.now()-PT[i].t0;
+      const ms=PT[i].elapsed,ds=Math.floor(ms/100),s=Math.floor(ds/10);
+      const el=document.getElementById('pt-'+i);
+      if(el)el.textContent=p2(Math.floor(s/60))+':'+p2(s%60)+'.'+ds%10;
+    },50);
+    const b=document.getElementById('pbtn-'+i);if(b)b.textContent='⏸ Stop';
+    const c=document.getElementById('pc-'+i);if(c){c.classList.remove('done-p');c.classList.add('active-p');}
+  }else stopPT(i);
+}
+function stopPT(i){
+  if(!PT[i].running)return;
+  PT[i].running=false;clearInterval(PT[i].iv);
+  _pd.tirs[i].secs=Math.floor(PT[i].elapsed/1000);
+  const b=document.getElementById('pbtn-'+i);if(b)b.textContent='▶ Start';
+  const c=document.getElementById('pc-'+i);if(c)c.classList.remove('active-p');
+}
+function resetPT(i){
+  if(!_pd)return;stopPT(i);PT[i].elapsed=0;PT[i].t0=0;
+  _pd.tirs[i].secs=0;
+  const el=document.getElementById('pt-'+i);if(el)el.textContent='00:00.0';
+  refreshCard(i);
+}
+function validerP(i){
+  if(!_pd)return;if(PT[i].running)stopPT(i);
+  if(_pd.tirs[i].secs===0&&!confirm('Temps 0:00 pour ce passage. Valider ?'))return;
+  _pd.tirs[i].done=true;refreshCard(i);toast('✓ Passage '+(i+1)+' validé');
+  if(_pd.tirs.every(p=>p.done))computeResume();
+}
+function undoP(i){ if(!_pd)return;_pd.tirs[i].done=false;refreshCard(i);document.getElementById('resume-section').style.display='none'; }
+
+/* ── CALCUL ── */
+function computeResume(){
+  if(!_pd)return;
+  const tirs=_pd.tirs;
+  const totalSecs=mainSecs();
+  const cibleSecs=tirs.reduce((s,p)=>s+(p.secs||0),0);
+  const courseSecs=Math.max(0,totalSecs-cibleSecs);
+  const totalTirs=tirs.reduce((s,p)=>s+(p.nb||0),0);
+  const totalLed=tirs.reduce((s,p)=>s+(p.led||0),0);
+  const taux=totalTirs?Math.round((totalLed/totalTirs)*100):0;
+  let nt=noteCible(cibleSecs);
+  const pen=penalite(tirs);nt=Math.max(0,nt-pen);
+  const nc=noteCourse(courseSecs,_pd.sexe,_pd.parcours);
+  const np=noteProjet(_pd.projetSecs,totalSecs);
+  const total=+(nt+nc+np).toFixed(2);
+  _pd._c={totalSecs,cibleSecs,courseSecs,totalTirs,totalLed,taux,noteTir:nt,pen,noteCourse:nc,noteProjet:np,total};
+
+  const grid=document.getElementById('resume-grid');
+  if(grid)grid.innerHTML=[
+    ['⏱',fmtSec(totalSecs),'Tps total'],['🎯',fmtSec(cibleSecs),'Tps cible'],
+    ['🏃',fmtSec(courseSecs),'Tps course'],['📊',taux+'%','Taux'],
+    ['🔫',totalTirs,'Tirs'],['💡',totalLed+'/15','LED'],
+    ['🎯',nt.toFixed(2)+'/8','Note tir'],['🏃',nc.toFixed(2)+'/5','Note course'],
+    ['⏱',np+'/2','Projet'],
+  ].map(([ico,val,lbl])=>'<div class="resume-item"><div style="font-size:1.2rem;margin-bottom:3px;">'+ico+'</div><div class="resume-val">'+val+'</div><div class="resume-lbl">'+lbl+'</div></div>').join('');
+
+  const nEl=document.getElementById('note-totale-val');if(nEl)nEl.textContent=total.toFixed(2)+' / 15';
+  let bd='Tir '+nt.toFixed(2)+'/8';
+  if(pen>0)bd+=' (pén.−'+pen+')';
+  bd+=' · Course '+nc.toFixed(2)+'/5 · Projet '+np+'/2';
+  const bdEl=document.getElementById('note-breakdown');if(bdEl)bdEl.textContent=bd;
+  const rs=document.getElementById('resume-section');
+  if(rs){rs.style.display='';setTimeout(()=>rs.scrollIntoView({behavior:'smooth',block:'start'}),200);}
+}
+
+/* ── FINALISER → FIREBASE ── */
+async function finaliser(){
+  if(!_pd||!_pd._c){toast('⚠ Validez d\'abord les 3 passages');return;}
+  const c=_pd._c;
+  const obj={
+    id:'p_'+Date.now(),
+    prenom:_pd.prenom,nom:_pd.nom,prenomNom:_pd.prenom+' '+_pd.nom,
+    sexe:_pd.sexe,parcours:_pd.parcours,piste:_pd.piste||'',
+    projetSecs:_pd.projetSecs,date:new Date().toISOString(),
+    totalSecs:c.totalSecs,cibleSecs:c.cibleSecs,courseSecs:c.courseSecs,
+    totalTirs:c.totalTirs,totalLed:c.totalLed,tauxGlobal:c.taux,
+    tirs:_pd.tirs.map(p=>({secs:p.secs,nb:p.nb,led:p.led})),
+    notes:{tir:c.noteTir,pen:c.pen,course:c.noteCourse,projet:c.noteProjet,total:c.total},
+    noteQual:null
+  };
+
+  // Local
+  let e=state.eleves.find(x=>x.prenom===obj.prenom&&x.nom===obj.nom);
+  if(!e){e={id:'e_'+Date.now(),prenom:obj.prenom,nom:obj.nom,sexe:obj.sexe,parcours:obj.parcours};state.eleves.push(e);}
+  obj.eleveId=e.id;
+  state.passages.push(obj);save();renderHome();
+
+  // Firebase sync
+  const statusEl=document.getElementById('sync-status');
+  if(_eleveSession&&db&&!_fbDemoMode){
+    console.log('[Firebase] Envoi vers session', _eleveSession, '— path:', 'sessions/'+_eleveSession+'/passages/'+obj.id);
+    try{
+      await db.ref('sessions/'+_eleveSession+'/passages/'+obj.id).set(obj);
+      console.log('[Firebase] ✅ Envoi réussi');
+      if(statusEl){statusEl.innerHTML='✅ Résultat envoyé dans la session <strong>'+_eleveSession+'</strong> — votre enseignant le voit en temps réel.';statusEl.className='ok-b';statusEl.style.display='';}
+      if(_elevePresenceId) markElevelDone(_eleveSession, _elevePresenceId);
+    }catch(err){
+      console.error('[Firebase] ❌ Erreur envoi:', err.message||err);
+      if(statusEl){statusEl.innerHTML='❌ Envoi échoué ('+err.message+') — résultat enregistré localement seulement.';statusEl.className='warn-b';statusEl.style.display='';}
+    }
+  }else if(!_eleveSession){
+    if(statusEl){statusEl.innerHTML='ℹ Pas de session active — résultat enregistré localement uniquement.';statusEl.className='info-b';statusEl.style.display='';}
+  }else if(_fbDemoMode){
+    if(statusEl){statusEl.innerHTML='ℹ Mode local — Firebase non connecté. Aucune synchronisation.';statusEl.className='warn-b';statusEl.style.display='';}
+  }
+
+  // Fiche recap
+  const fiche=document.getElementById('fiche-recap');
+  if(fiche)fiche.innerHTML='<div class="card-title">Fiche — '+esc(obj.prenom)+' '+esc(obj.nom)+'</div>'
+    +[['Parcours','Parcours '+obj.parcours+' · 3×'+PI[obj.parcours].distPerLap+' m'],
+      ['Temps total',fmtSec(c.totalSecs)],['Temps cible',fmtSec(c.cibleSecs)],
+      ['Temps course',fmtSec(c.courseSecs)],['Projet annoncé',fmtSec(_pd.projetSecs)],
+      ['Total tirs',''+c.totalTirs],['Total LED',c.totalLed+'/15'],
+      ['Note tir',c.noteTir.toFixed(2)+'/8'+(c.pen>0?' (pén.−'+c.pen+')':'')],
+      ['Note course',c.noteCourse.toFixed(2)+'/5'],['Note projet',c.noteProjet+'/2'],
+      ['NOTE TOTALE','<strong style="color:var(--blue);font-size:1.1rem;">'+c.total.toFixed(2)+' / 15</strong>'],
+    ].map(([k,v])=>'<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:.82rem;"><span style="color:var(--text2);">'+k+'</span><span>'+v+'</span></div>').join('');
+
+  const doneMsg=document.getElementById('done-msg');
+  if(doneMsg) doneMsg.textContent=_eleveSession
+    ?'Votre résultat a été envoyé dans la session '+_eleveSession+'. Votre enseignant peut le voir en temps réel.'
+    :'Résultat enregistré localement. Contactez votre enseignant pour l\'importer.';
+
+  document.getElementById('step-chrono').style.display='none';
+  document.getElementById('step-done').style.display='block';
+  window.scrollTo(0,0);
+}
+
+function resetPassage(){
+  pauseMain();MT.elapsed=0;MT.t0=0;
+  PT.forEach(t=>{clearInterval(t.iv);t.elapsed=0;t.running=false;t.iv=null;t.t0=0;});
+  _pd=null;
+  document.getElementById('step-infos').style.display='block';
+  document.getElementById('step-chrono').style.display='none';
+  document.getElementById('step-done').style.display='none';
+  ['p-prenom','p-nom','p-piste'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const rs=document.getElementById('resume-section');if(rs)rs.style.display='none';
+  const mc=document.getElementById('main-chrono');if(mc){mc.textContent='00:00.0';mc.classList.remove('running');}
+  const mb=document.getElementById('btn-main-start');if(mb)mb.textContent='▶ Démarrer';
+  updateParcoursInfo();updateSessionUI();
+}
+
+/* ══════════════════════════════════════════
+   SESSION ÉLÈVE
+══════════════════════════════════════════ */
+function showSessionModal(){
+  const el=document.getElementById('eleve-sess-input');
+  if(el)el.value=_eleveSession||'';
+  openModal('modal-session');
+}
+function joinSession(){
+  const v=(document.getElementById('eleve-sess-input').value||'').trim();
+  const err=document.getElementById('sess-modal-err');
+  if(!v||v.length<4){if(err){err.textContent='⚠ Code invalide';err.style.display='';}return;}
+  _eleveSession=v;
+  localStorage.setItem('lr_eleve_sess',v);
+  closeModal('modal-session');
+  updateSessionUI();
+  toast('✅ Session '+v+' rejointe !');
+}
+function updateSessionUI(){
+  const chip=document.getElementById('topbar-session');
+  const pBanner=document.getElementById('passage-session-info');
+  const hBanner=document.getElementById('home-session-banner');
+  if(_eleveSession){
+    if(chip){chip.textContent='Session '+_eleveSession;chip.style.display='';}
+    if(pBanner){pBanner.innerHTML='📡 Session <strong>'+_eleveSession+'</strong> active — résultat envoyé automatiquement.';pBanner.style.display='';}
+    if(hBanner){
+      hBanner.innerHTML='<div class="ok-b" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">'
+        +'<span>📡 Session active : <strong>'+_eleveSession+'</strong></span>'
+        +'<button class="btn btn-ghost btn-sm" onclick="showSessionModal()">Changer</button></div>';
+    }
+  }else{
+    if(chip)chip.style.display='none';
+    if(pBanner)pBanner.style.display='none';
+    if(hBanner){
+      hBanner.innerHTML='<div class="info-b" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">'
+        +'<span>📡 Pas de session active</span>'
+        +'<button class="btn btn-ghost btn-sm" onclick="showSessionModal()">Rejoindre une session</button></div>';
+    }
+  }
+}
+
+/* ══════════════════════════════════════════
+   SESSION ENSEIGNANT + FIREBASE LISTENER
+══════════════════════════════════════════ */
+let _ensSession = null;
+let _fbResultsListener = null;
+
+function genCode(){ document.getElementById('new-sess-input').value=String(Math.floor(1000+Math.random()*9000)); }
+
+function createSession(){
+  const v=(document.getElementById('new-sess-input').value||'').trim();
+  if(!v||v.length<4){toast('⚠ Code invalide');return;}
+  _ensSession=v;
+  localStorage.setItem('lr_ens_sess',v);
+  document.getElementById('session-active-block').style.display='';
+  document.getElementById('session-create-block').style.display='none';
+  document.getElementById('sess-display-code').textContent=v;
+  // Afficher le chip session enseignant (VERT) dans la topbar
+  const enChip = document.getElementById('topbar-ens-sess');
+  if(enChip){ enChip.textContent='📡 Session '+v; enChip.style.display=''; }
+  toast('📡 Session '+v+' créée ! Donnez ce code aux élèves.');
+  startFirebaseListeners(v);
+}
+
+function startFirebaseListeners(sessionCode){
+  if(!db||_fbDemoMode){
+    console.warn('[Firebase] Listener non démarré — db:', db, '_fbDemoMode:', _fbDemoMode);
+    return;
+  }
+  console.log('[Firebase] 🔊 Écoute session:', sessionCode);
+
+  // Détacher les anciens listeners pour éviter les doublons
+  try{ db.ref('sessions/'+sessionCode+'/passages').off(); }catch(e){}
+
+  // ── Listener temps réel sur les passages ──────────────────
+  db.ref('sessions/'+sessionCode+'/passages').on('value', snap=>{
+    const data = snap.val()||{};
+    const nbTotal = Object.keys(data).length;
+    console.log('[Firebase] 📥 Données reçues — session', sessionCode, '—', nbTotal, 'passage(s)');
+
+    let nbNew = 0;
+    Object.values(data).forEach(p=>{
+      if(!p||!p.id) return;
+      if(state.passages.some(x=>x.id===p.id)) return; // déjà présent
+      let e=state.eleves.find(x=>x.prenom===p.prenom&&x.nom===p.nom);
+      if(!e){
+        e={id:'e_'+Date.now()+'_'+Math.random().toString(36).slice(2,5),
+           prenom:p.prenom||'', nom:p.nom||'',
+           sexe:p.sexe||'M', parcours:p.parcours||'C'};
+        state.eleves.push(e);
+      }
+      p.eleveId=e.id;
+      state.passages.push(p);
+      nbNew++;
+      console.log('[Firebase] ➕ Nouveau passage:', p.prenom, p.nom, '— Note:', p.notes&&p.notes.total);
+      toast('✅ Résultat reçu : '+p.prenom+' '+p.nom+' — '+(p.notes&&p.notes.total!=null?p.notes.total.toFixed(1):'?')+'/15', 4000);
+    });
+
+    if(nbNew>0 || nbTotal>0){
+      save();
+      renderHome();
+      renderResultats();
+      renderEnsResultats();
+    }
+
+    // Mettre à jour le compteur + horodatage
+    const countEl=document.getElementById('sess-display-count');
+    if(countEl) countEl.textContent=nbTotal+' résultat'+(nbTotal>1?'s':'')+' reçu'+(nbTotal>1?'s':'');
+    const syncEl=document.getElementById('fb-last-sync');
+    if(syncEl) syncEl.textContent='Dernière sync : '+new Date().toLocaleTimeString('fr-FR');
+  }, err=>{
+    console.error('[Firebase] ❌ Erreur listener passages:', err.message||err);
+    toast('❌ Erreur Firebase : '+err.message, 5000);
+  });
+
+  // ── Présence ──────────────────────────────────────────────
+  listenPresence(sessionCode);
+}
+
+// ── Récupération MANUELLE (filet de sécurité) ──────────────
+async function fbRecuperer(){
+  if(!_ensSession){toast('⚠ Aucune session active');return;}
+  if(!db||_fbDemoMode){toast('⚠ Firebase non connecté');return;}
+  const btn=document.getElementById('btn-fb-refresh');
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span>...';}
+  console.log('[Firebase] 🔄 Récupération manuelle — session', _ensSession);
+  try{
+    const snap = await db.ref('sessions/'+_ensSession+'/passages').once('value');
+    const data = snap.val()||{};
+    const nb = Object.keys(data).length;
+    console.log('[Firebase] Récupération OK — ', nb, 'passages trouvés:', data);
+
+    let nbNew=0;
+    Object.values(data).forEach(p=>{
+      if(!p||!p.id) return;
+      if(state.passages.some(x=>x.id===p.id)) return;
+      let e=state.eleves.find(x=>x.prenom===p.prenom&&x.nom===p.nom);
+      if(!e){
+        e={id:'e_'+Date.now()+'_'+Math.random().toString(36).slice(2,5),
+           prenom:p.prenom||'', nom:p.nom||'',
+           sexe:p.sexe||'M', parcours:p.parcours||'C'};
+        state.eleves.push(e);
+      }
+      p.eleveId=e.id;
+      state.passages.push(p);
+      nbNew++;
+    });
+    save();renderHome();renderResultats();renderEnsResultats();
+    const syncEl=document.getElementById('fb-last-sync');
+    if(syncEl) syncEl.textContent='Récupération manuelle : '+new Date().toLocaleTimeString('fr-FR');
+    toast(nbNew>0
+      ? '✅ '+nbNew+' nouveau'+(nbNew>1?'x':'')+ ' résultat'+(nbNew>1?'s':'')+' importé'+(nbNew>1?'s':'')+' !'
+      : (nb>0 ? '✅ '+nb+' résultat'+(nb>1?'s':'')+' déjà à jour.' : '📭 Aucun résultat dans la session '+_ensSession+'.'), 4000);
+  }catch(err){
+    console.error('[Firebase] Erreur récupération:', err);
+    toast('❌ Erreur : '+err.message, 5000);
+  }finally{
+    if(btn){btn.disabled=false;btn.innerHTML='🔄 Récupérer maintenant';}
+  }
+}
+
+function endSession(){
+  if(!confirm('Terminer la session '+_ensSession+' ?'))return;
+  if(db&&!_fbDemoMode){
+    db.ref('sessions/'+_ensSession).off();
+  }
+  _ensSession=null;
+  localStorage.removeItem('lr_ens_sess');
+  document.getElementById('session-active-block').style.display='none';
+  document.getElementById('session-create-block').style.display='';
+  const enChip=document.getElementById('topbar-ens-sess');
+  if(enChip)enChip.style.display='none';
+  _presenceData={};
+  renderPresenceGrid();
+  toast('Session terminée');
+}
+
+/* ══════════════════════════════════════════
+   RÉSULTATS
+══════════════════════════════════════════ */
+function renderResultats(){
+  const tbody=document.getElementById('results-tbody');
+  const noEl=document.getElementById('no-results');
+  if(!state.passages.length){if(noEl)noEl.style.display='';if(tbody)tbody.innerHTML='';return;}
+  if(noEl)noEl.style.display='none';
+  if(tbody)tbody.innerHTML=state.passages.map(p=>{
+    const nc=p.notes&&p.notes.total>=10?'var(--green)':p.notes&&p.notes.total>=7?'var(--orange)':'var(--red)';
+    return '<tr><td><strong>'+esc(p.prenom+' '+p.nom)+'</strong></td>'
+      +'<td><span class="par-badge par-'+p.parcours+'">'+p.parcours+'</span></td>'
+      +'<td>'+fmtSec(p.totalSecs)+'</td><td>'+fmtSec(p.cibleSecs)+'</td><td>'+fmtSec(p.courseSecs)+'</td>'
+      +'<td>'+(p.totalTirs||0)+'</td><td>'+(p.totalLed||0)+'/15</td>'
+      +'<td>'+(p.notes&&p.notes.tir!=null?p.notes.tir.toFixed(2):'—')+'/8</td>'
+      +'<td>'+(p.notes&&p.notes.course!=null?p.notes.course.toFixed(2):'—')+'/5</td>'
+      +'<td>'+(p.notes&&p.notes.projet!=null?p.notes.projet:'—')+'/2</td>'
+      +'<td class="note-cell" style="color:'+nc+';">'+(p.notes&&p.notes.total!=null?p.notes.total.toFixed(2):'—')+'/15</td>'
+      +'<td><button class="btn btn-ghost btn-sm" onclick="deleteP(\''+p.id+'\')">🗑</button></td></tr>';
+  }).join('');
+}
+function deleteP(id){
+  if(!confirm('Supprimer ?'))return;
+  state.passages=state.passages.filter(p=>p.id!==id);
+  save();renderResultats();renderHome();renderEnsResultats();toast('🗑 Supprimé');
+}
+function showBarTab(id,btn){
+  document.querySelectorAll('.bar-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.bar-tab').forEach(t=>t.classList.remove('active'));
+  const s=document.getElementById(id);if(s)s.classList.add('active');
+  if(btn)btn.classList.add('active');
+}
+
+/* ══════════════════════════════════════════
+   ENSEIGNANT AUTH
+══════════════════════════════════════════ */
+let _ensOk=false;
+function initEns(){
+  const pw=localStorage.getItem('lr_pw');
+  const login=document.getElementById('ens-login');
+  const content=document.getElementById('ens-content');
+  if(!login||!content)return;
+  if(!pw){
+    login.style.display='';content.style.display='none';
+    document.getElementById('login-card').innerHTML=
+      '<div class="card-title">Première utilisation</div>'
+      +'<div class="fg"><label class="lbl">Mot de passe</label><div class="pw-wrap"><input class="inp" type="password" id="setup-pw1" placeholder="Choisir"><button class="pw-toggle" onclick="togglePw(\'setup-pw1\')">👁</button></div></div>'
+      +'<div class="fg"><label class="lbl">Confirmer</label><div class="pw-wrap"><input class="inp" type="password" id="setup-pw2" placeholder="Confirmer"><button class="pw-toggle" onclick="togglePw(\'setup-pw2\')">👁</button></div></div>'
+      +'<div id="setup-err" class="warn-b" style="display:none;"></div>'
+      +'<button class="btn btn-primary btn-full" onclick="doSetup()">Créer</button>';
+  }else if(!_ensOk){
+    login.style.display='';content.style.display='none';
+    document.getElementById('login-card').innerHTML=
+      '<div class="card-title">Connexion Enseignant</div>'
+      +'<div class="fg"><label class="lbl">Mot de passe</label><div class="pw-wrap"><input class="inp" type="password" id="login-pw" placeholder="Mot de passe" onkeydown="if(event.key===\'Enter\')doLogin()"><button class="pw-toggle" onclick="togglePw(\'login-pw\')">👁</button></div></div>'
+      +'<div id="login-err" class="warn-b" style="display:none;">Mot de passe incorrect.</div>'
+      +'<button class="btn btn-primary btn-full" onclick="doLogin()">Se connecter</button>';
+  }else{
+    login.style.display='none';content.style.display='';
+    renderEnsResultats();
+    // Restaurer session
+    const savedSess=localStorage.getItem('lr_ens_sess');
+    if(savedSess&&!_ensSession){
+      _ensSession=savedSess;
+      document.getElementById('session-active-block').style.display='';
+      document.getElementById('session-create-block').style.display='none';
+      document.getElementById('sess-display-code').textContent=savedSess;
+      // Chip vert enseignant
+      const enChip = document.getElementById('topbar-ens-sess');
+      if(enChip){ enChip.textContent='📡 Session '+savedSess; enChip.style.display=''; }
+      startFirebaseListeners(savedSess);
+    }
+  }
+}
+function togglePw(id){const el=document.getElementById(id);if(el)el.type=el.type==='password'?'text':'password';}
+function doSetup(){
+  const p1=(document.getElementById('setup-pw1').value||'').trim();
+  const p2=(document.getElementById('setup-pw2').value||'').trim();
+  const err=document.getElementById('setup-err');
+  if(!p1){err.textContent='Vide.';err.style.display='';return;}
+  if(p1!==p2){err.textContent='Ne correspondent pas.';err.style.display='';return;}
+  localStorage.setItem('lr_pw',p1);_ensOk=true;initEns();toast('✅ Mot de passe créé');
+}
+function doLogin(){
+  const pwEl=document.getElementById('login-pw');if(!pwEl)return;
+  if(pwEl.value===localStorage.getItem('lr_pw')){_ensOk=true;initEns();}
+  else{const e=document.getElementById('login-err');if(e)e.style.display='';}
+}
+function logoutEns(){_ensOk=false;stopScanner();initEns();toast('👋 Déconnecté');}
+function changePw(){
+  const o=(document.getElementById('g-old-pw').value||'');
+  const n1=(document.getElementById('g-new-pw1').value||'');
+  const n2=(document.getElementById('g-new-pw2').value||'');
+  const msg=document.getElementById('pw-msg');
+  if(o!==localStorage.getItem('lr_pw')){msg.textContent='Ancien incorrect.';msg.style.color='var(--red)';msg.style.display='';return;}
+  if(!n1||n1!==n2){msg.textContent=n1?'Ne correspondent pas.':'Vide.';msg.style.color='var(--red)';msg.style.display='';return;}
+  localStorage.setItem('lr_pw',n1);
+  msg.textContent='✅ Modifié.';msg.style.color='var(--green)';msg.style.display='';
+  ['g-old-pw','g-new-pw1','g-new-pw2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+}
+
+/* ── ENS TABS ── */
+function showEnsTab(id,btn){
+  document.querySelectorAll('.ens-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ens-tab').forEach(t=>t.classList.remove('active'));
+  const el=document.getElementById(id);if(el)el.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='ep-resultats')renderEnsResultats();
+  if(id==='ep-scanner')stopScanner();
+}
+
+/* ── ENS RÉSULTATS ── */
+const QL=['','Insuffisant','Fragile','Satisfaisant','Très bon'];
+const QD=['','Peu d\'efforts, marche souvent.','Engagement irrégulier.','Engagement régulier.','Engagement actif et persévérant.'];
+function renderEnsResultats(){
+  const tbody=document.getElementById('ens-tbody');
+  const noEl=document.getElementById('ens-no-results');
+  if(!tbody)return;
+  if(!state.passages.length){if(noEl)noEl.style.display='';tbody.innerHTML='';return;}
+  if(noEl)noEl.style.display='none';
+  tbody.innerHTML=state.passages.map(p=>{
+    const nc=p.notes&&p.notes.total>=10?'var(--green)':p.notes&&p.notes.total>=7?'var(--orange)':'var(--red)';
+    return '<tr><td><strong>'+esc(p.prenom+' '+p.nom)+'</strong></td>'
+      +'<td><span class="par-badge par-'+p.parcours+'">'+p.parcours+'</span></td>'
+      +'<td>'+fmtSec(p.totalSecs)+'</td><td>'+fmtSec(p.cibleSecs)+'</td><td>'+fmtSec(p.courseSecs)+'</td>'
+      +'<td>'+(p.totalTirs||0)+'</td><td>'+(p.totalLed||0)+'/15</td>'
+      +'<td>'+(p.notes&&p.notes.tir!=null?p.notes.tir.toFixed(2):'—')+'/8</td>'
+      +'<td>'+(p.notes&&p.notes.course!=null?p.notes.course.toFixed(2):'—')+'/5</td>'
+      +'<td>'+(p.notes&&p.notes.projet!=null?p.notes.projet:'—')+'/2</td>'
+      +'<td class="note-cell" style="color:'+nc+';">'+(p.notes&&p.notes.total!=null?p.notes.total.toFixed(2):'—')+'/15</td>'
+      +'<td>'+(p.noteQual?'<span class="badge badge-blue">'+p.noteQual+'·'+QL[p.noteQual]+'</span>':'—')+'</td>'
+      +'<td><div style="display:flex;gap:4px;">'
+      +'<button class="btn btn-ghost btn-sm" onclick="openQual(\''+p.id+'\')">⭐</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="deleteP(\''+p.id+'\');renderEnsResultats()">🗑</button>'
+      +'</div></td></tr>';
+  }).join('');
+}
+function confirmClearAll(){
+  if(!confirm('⚠ Vider tous les résultats ?'))return;
+  state.passages=[];save();renderEnsResultats();renderHome();renderResultats();toast('♻ Effacé');
+}
+let _qPid=null,_qVal=null;
+function openQual(pid){
+  _qPid=pid;_qVal=null;
+  const p=state.passages.find(x=>x.id===pid);
+  _qVal=p?.noteQual||null;
+  document.getElementById('mq-nom').textContent=p?p.prenom+' '+p.nom:'';
+  document.querySelectorAll('.qual-sel-btn').forEach((b,i)=>b.classList.toggle('active',p?.noteQual===i+1));
+  document.getElementById('qual-desc').textContent=_qVal?QD[_qVal]:'';
+  openModal('modal-qual');
+}
+function setQual(v){ _qVal=v; document.querySelectorAll('.qual-sel-btn').forEach((b,i)=>b.classList.toggle('active',i+1===v)); document.getElementById('qual-desc').textContent=QD[v]; }
+function saveQual(){
+  if(!_qVal){toast('Sélectionnez une note');return;}
+  const p=state.passages.find(x=>x.id===_qPid);
+  if(p){p.noteQual=_qVal;save();renderEnsResultats();toast('✅ Note enregistrée');}
+  closeModal('modal-qual');
+}
+
+/* ══════════════════════════════════════════
+   SCANNER QR
+══════════════════════════════════════════ */
+let _scanStream=null,_scanAnim=null;
+function startScanner(){
+  const sb=document.getElementById('btn-scan-start');const st=document.getElementById('btn-scan-stop');
+  const ban=document.getElementById('cam-banner');
+  if(sb)sb.style.display='none';if(st)st.style.display='inline-flex';if(ban)ban.style.display='';
+  document.getElementById('scanner-result').style.display='none';
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('❌ Caméra non supportée');stopScanner();return;}
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}})
+    .then(stream=>{
+      _scanStream=stream;
+      const v=document.getElementById('scanner-video');
+      if(v){v.srcObject=stream;}if(ban)ban.style.display='none';
+      const play=v?.play();if(play)play.catch(()=>{}).finally(()=>{_scanAnim=requestAnimationFrame(scanFrame);});
+    })
+    .catch(err=>{
+      if(ban)ban.style.display='none';stopScanner();
+      const msgs={NotAllowedError:'Permission refusée.',NotFoundError:'Aucune caméra.',NotReadableError:'Caméra déjà utilisée.'};
+      toast('❌ '+(msgs[err.name]||'Erreur caméra'),4000);
+    });
+}
+function stopScanner(){
+  if(_scanStream){_scanStream.getTracks().forEach(t=>t.stop());_scanStream=null;}
+  if(_scanAnim){cancelAnimationFrame(_scanAnim);_scanAnim=null;}
+  const v=document.getElementById('scanner-video');if(v)v.srcObject=null;
+  const sb=document.getElementById('btn-scan-start');const st=document.getElementById('btn-scan-stop');
+  if(sb)sb.style.display='inline-flex';if(st)st.style.display='none';
+  const b=document.getElementById('cam-banner');if(b)b.style.display='none';
+}
+function scanFrame(){
+  const video=document.getElementById('scanner-video');const canvas=document.getElementById('scanner-canvas');
+  if(!video||!canvas){_scanAnim=requestAnimationFrame(scanFrame);return;}
+  if(typeof jsQR==='undefined'){_scanAnim=requestAnimationFrame(scanFrame);return;}
+  if(video.readyState===video.HAVE_ENOUGH_DATA&&video.videoWidth>0){
+    canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+    const ctx=canvas.getContext('2d');ctx.drawImage(video,0,0);
+    try{
+      const code=jsQR(ctx.getImageData(0,0,canvas.width,canvas.height).data,canvas.width,canvas.height,{inversionAttempts:'dontInvert'});
+      if(code&&code.data){stopScanner();processQR(code.data);return;}
+    }catch(e){}
+  }
+  _scanAnim=requestAnimationFrame(scanFrame);
+}
+function processQR(jsonStr){
+  try{
+    const data=JSON.parse(jsonStr);
+    if(!data.id||!data.prenom)throw new Error('invalide');
+    if(state.passages.some(p=>p.id===data.id)){
+      const r=document.getElementById('scanner-result');
+      if(r){r.innerHTML='<div class="warn-b">⚠ Déjà enregistré.</div>';r.style.display='';}
+      return;
+    }
+    let e=state.eleves.find(x=>x.prenom===data.prenom&&x.nom===data.nom);
+    if(!e){e={id:'e_'+Date.now(),prenom:data.prenom,nom:data.nom,sexe:data.sexe||'M',parcours:data.parcours||'C'};state.eleves.push(e);}
+    data.eleveId=e.id;state.passages.push(data);save();renderEnsResultats();renderHome();renderResultats();
+    const r=document.getElementById('scanner-result');
+    if(r){r.innerHTML='<div class="ok-b">✅ Importé : <strong>'+esc(data.prenom+' '+data.nom)+'</strong></div>';r.style.display='';}
+    toast('✅ Fiche importée !');
+    showEnsTab('ep-resultats',document.getElementById('etb-res'));
+  }catch(e){toast('❌ QR invalide ou illisible');}
+}
+
+/* ══════════════════════════════════════════
+   PDF
+══════════════════════════════════════════ */
+function generatePDF(){
+  if(!state.passages.length){toast('Aucun résultat');return;}
+  const rows=state.passages.map(p=>
+    '<tr><td>'+esc(p.prenom+' '+p.nom)+'</td><td>'+(p.sexe==='F'?'F':'G')+'</td><td>'+p.parcours+'</td>'
+    +'<td>'+fmtSec(p.totalSecs)+'</td><td>'+fmtSec(p.cibleSecs)+'</td><td>'+fmtSec(p.courseSecs)+'</td>'
+    +'<td>'+(p.totalTirs||0)+'</td><td>'+(p.totalLed||0)+'/15</td>'
+    +'<td>'+(p.notes&&p.notes.tir!=null?p.notes.tir.toFixed(2):'—')+'</td>'
+    +'<td>'+(p.notes&&p.notes.course!=null?p.notes.course.toFixed(2):'—')+'</td>'
+    +'<td>'+(p.notes&&p.notes.projet!=null?p.notes.projet:'—')+'</td>'
+    +'<td><strong>'+(p.notes&&p.notes.total!=null?p.notes.total.toFixed(2):'—')+'/15</strong></td>'
+    +'<td>'+(p.noteQual?p.noteQual+'·'+QL[p.noteQual]:'—')+'</td></tr>'
+  ).join('');
+  const win=window.open('','_blank');
+  if(!win){toast('❌ Autorisez les popups');return;}
+  win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Laser Run EPS</title>'
+    +'<style>body{font-family:Arial,sans-serif;font-size:11px;padding:15px;}h1{color:#0ea5e9;font-size:1.2rem;margin-bottom:3px;}'
+    +'.sub{color:#666;font-size:.72rem;margin-bottom:14px;}table{width:100%;border-collapse:collapse;}'
+    +'th{background:#0a1628;color:#fff;padding:5px 6px;text-align:left;font-size:.65rem;}'
+    +'td{padding:4px 6px;border-bottom:1px solid #dde4ee;}tr:nth-child(even) td{background:#f8fafc;}'
+    +'@media print{@page{margin:10mm;size:landscape;}}</style></head><body>'
+    +'<h1>🎯 Laser Run EPS — Résultats</h1>'
+    +'<div class="sub">Généré le '+new Date().toLocaleDateString('fr-FR')+' à '+new Date().toLocaleTimeString('fr-FR')+'</div>'
+    +'<table><thead><tr><th>Élève</th><th>Sx</th><th>Parc.</th><th>T.Total</th><th>T.Cible</th><th>T.Course</th>'
+    +'<th>Tirs</th><th>LED</th><th>N.Tir</th><th>N.Course</th><th>Projet</th><th>Total/15</th><th>Qual.</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<script>window.onload=function(){window.print();};<\/script></body></html>');
+  win.document.close();
+}
+
+/* ══════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════ */
+function fmtSec(s){if(s===null||s===undefined||isNaN(s))return'—';s=Math.round(s);return p2(Math.floor(s/60))+':'+p2(s%60);}
+function p2(n){return String(Math.abs(Math.floor(n))).padStart(2,'0');}
+function getTaux(nb,led){if(!nb)return'—';return Math.round(((led||0)/nb)*100)+'%';}
+function tauxCls(nb,led){if(!nb)return'badge-blue';const t=(led||0)/nb;return t>=0.7?'badge-green':t>=0.4?'badge-orange':'badge-red';}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function confirmReset(){
+  if(!confirm('⚠ Réinitialiser TOUTES les données locales ?'))return;
+  state.eleves=[];state.passages=[];save();renderHome();renderResultats();toast('♻ Réinitialisé');
+}
+
+/* ── jsQR ── */
+(function(){
+  const s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
+  s.onerror=function(){window.jsQR=null;};
+  document.head.appendChild(s);
+})();
+
+/* ══════════════════════════════════════════
+   FIREBASE CONFIG — projet eps-laser-run
+   (URL CORRIGÉE : eps-laser-run-default-rtdb)
+══════════════════════════════════════════ */
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyBYgDs4wRy0pgOGY0nKJC8WHGHK5rHQrgc",
+  authDomain:        "eps-laser-run.firebaseapp.com",
+  databaseURL:       "https://eps-laser-run-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:         "eps-laser-run",
+  storageBucket:     "eps-laser-run.firebasestorage.app",
+  messagingSenderId: "436261236946",
+  appId:             "1:436261236946:web:3ce7c9f58894bb8e3f7d0b"
+};
+
+/* ══════════════════════════════════════════
+   INIT AU CHARGEMENT
+══════════════════════════════════════════ */
+window.addEventListener('load', function init(){
+  console.log('[Init] Protocole:', location.protocol, '| URL:', location.href);
+  const sc = localStorage.getItem('lr_eleve_sess');
+  if(sc){ _eleveSession = sc; console.log('[Init] Session eleve restauree:', sc); }
+
+  // ── Détecter le protocole AVANT d'essayer Firebase ────────
+  if(location.protocol === 'file:'){
+    // Fichier ouvert en local → Firebase impossible → afficher aide
+    showProtocolError();
+    launchDemoMode();
+    return;
+  }
+
+  const ok = initFirebase(FIREBASE_CONFIG);
+  if(ok){
+    launchApp();
+  }else{
+    const reason = (typeof firebase === 'undefined')
+      ? 'Le SDK Firebase n\'a pas pu se charger depuis le CDN Google. Vérifiez votre connexion internet.'
+      : 'Erreur d\'initialisation Firebase. Voir la console pour les détails (F12).';
+    afficherBanniereErreur('⚠ Firebase non connecté — ' + reason);
+    launchDemoMode();
+  }
+});
+
+function showProtocolError(){
+  // Affichée quand l'utilisateur ouvre le fichier en local (double-clic)
+  setTimeout(()=>{
+    const d = document.createElement('div');
+    d.style.cssText = [
+      'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999',
+      'display:flex;align-items:center;justify-content:center;padding:20px'
+    ].join(';');
+    d.innerHTML = `
+      <div style="background:#1a2e4a;border:2px solid #f59e0b;border-radius:14px;padding:28px;max-width:480px;width:100%;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:12px;">📂➡️🌐</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:900;color:#f59e0b;margin-bottom:10px;">
+          Fichier ouvert en local
+        </div>
+        <p style="font-size:.88rem;color:#7fa8cc;line-height:1.6;margin-bottom:18px;">
+          Firebase ne fonctionne <strong style="color:#fff;">pas</strong> quand le fichier est ouvert en double-cliquant dessus.<br><br>
+          Il faut accéder à l'application via l'URL <strong style="color:#0ea5e9;">GitHub Pages</strong> :
+        </p>
+        <div style="background:#0b1426;border:1px solid #2a4060;border-radius:9px;padding:12px;margin-bottom:18px;word-break:break-all;font-size:.82rem;color:#38bdf8;">
+          https://epsmrmoraux-web.github.io/EPS.Laser.run/
+        </div>
+        <p style="font-size:.78rem;color:#3d5a7a;margin-bottom:16px;">
+          L'application fonctionnera en <strong style="color:#7fa8cc;">mode local uniquement</strong> tant qu'elle n'est pas ouverte via cette URL.
+        </p>
+        <button onclick="this.closest('div[style]').remove()" style="background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;padding:12px 24px;border-radius:9px;font-size:.92rem;font-weight:700;cursor:pointer;width:100%;">
+          Continuer en mode local (sans synchronisation)
+        </button>
+      </div>
+    `;
+    document.body.appendChild(d);
+  }, 300);
+}
+
+function afficherBanniereErreur(msg){
+  setTimeout(()=>{
+    let b = document.getElementById('fb-err-banner');
+    if(!b){
+      b = document.createElement('div');
+      b.id = 'fb-err-banner';
+      b.style.cssText = 'position:fixed;top:56px;left:0;right:0;background:#b45309;color:#fff;padding:10px 14px;font-size:.78rem;font-weight:600;z-index:500;text-align:center;cursor:pointer;';
+      b.onclick = ()=>b.style.display='none';
+      document.body.appendChild(b);
+    }
+    b.textContent = msg + ' (tapez ici pour fermer)';
+  }, 400);
+}
+</script>
